@@ -8,3 +8,171 @@
 .support-header-margin {
     @apply mb-5;
 }
+
+/* ========================================
+   BOOKSHELF VIEW
+   ======================================== */
+
+/* Container */
+.bookshelf-container {
+    @apply flex flex-col gap-6 p-4;
+    --bookshelf-height: 180px;
+    --book-width: 100px;
+    --book-gap: 8px;
+}
+
+/* Empty state */
+.bookshelf-empty {
+    @apply flex flex-col items-center justify-center py-16 gap-4;
+}
+
+.bookshelf-empty-icon {
+    @apply text-6xl;
+}
+
+.bookshelf-empty-text {
+    @apply text-lg font-medium;
+    color: var(--text-normal);
+}
+
+.bookshelf-empty-hint {
+    @apply text-sm;
+    color: var(--text-muted);
+}
+
+/* Shelf section */
+.bookshelf-section {
+    @apply flex flex-col gap-2;
+}
+
+/* Shelf header */
+.bookshelf-header {
+    @apply flex items-center justify-between px-2;
+}
+
+.bookshelf-header-label {
+    @apply text-base font-semibold;
+    color: var(--text-normal);
+}
+
+.bookshelf-header-count {
+    @apply text-sm;
+    color: var(--text-muted);
+}
+
+/* Shelf (the actual shelf with books) */
+.bookshelf-shelf {
+    @apply relative rounded-lg p-4 pb-6;
+    min-height: calc(var(--bookshelf-height) + 40px);
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+}
+
+/* Wood texture effect */
+.bookshelf-shelf--wood {
+    background: linear-gradient(
+        180deg,
+        var(--background-secondary) 0%,
+        var(--background-secondary-alt, var(--background-secondary)) 85%,
+        var(--background-modifier-border) 85%,
+        var(--background-modifier-border) 100%
+    );
+}
+
+.bookshelf-shelf--wood::after {
+    @apply absolute bottom-0 left-0 right-0 h-3 rounded-b-lg;
+    content: '';
+    background: linear-gradient(
+        180deg,
+        var(--background-modifier-border) 0%,
+        var(--background-primary-alt, var(--background-secondary)) 100%
+    );
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Books row */
+.bookshelf-books {
+    @apply flex flex-wrap items-end;
+    gap: var(--book-gap);
+    min-height: var(--bookshelf-height);
+}
+
+/* Empty shelf message */
+.bookshelf-shelf-empty {
+    @apply flex items-center justify-center w-full italic;
+    height: var(--bookshelf-height);
+    color: var(--text-faint);
+}
+
+/* Individual book */
+.bookshelf-book {
+    @apply flex flex-col cursor-pointer transition-transform duration-150;
+    width: var(--book-width);
+}
+
+.bookshelf-book:hover {
+    @apply -translate-y-2;
+}
+
+.bookshelf-book:active {
+    @apply -translate-y-1;
+}
+
+/* Book cover */
+.bookshelf-book-cover {
+    @apply relative rounded-sm overflow-hidden;
+    width: var(--book-width);
+    height: var(--bookshelf-height);
+    box-shadow:
+        2px 2px 6px rgba(0, 0, 0, 0.2),
+        inset -2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Cover with image */
+.bookshelf-book-cover--image {
+    @apply bg-cover bg-center;
+}
+
+/* Spine without image */
+.bookshelf-book-cover--spine {
+    @apply flex items-center justify-center;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.15) 0%,
+        transparent 10%,
+        transparent 90%,
+        rgba(0, 0, 0, 0.1) 100%
+    );
+}
+
+/* Spine title (vertical) */
+.bookshelf-spine-title {
+    @apply text-xs font-medium px-1 text-center;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    max-height: calc(var(--bookshelf-height) - 20px);
+    overflow: hidden;
+}
+
+/* Book info below cover */
+.bookshelf-book-info {
+    @apply flex flex-col gap-0.5 pt-1.5 px-0.5;
+}
+
+.bookshelf-book-title {
+    @apply text-xs font-medium leading-tight truncate;
+    color: var(--text-normal);
+}
+
+.bookshelf-book-author {
+    @apply text-xs truncate;
+    color: var(--text-muted);
+}
+
+.bookshelf-book-rating {
+    @apply text-xs;
+    color: var(--text-accent);
+}
