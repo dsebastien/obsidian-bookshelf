@@ -1,26 +1,29 @@
 {
-    "name": "obsidian-my-plugin",
-    "version": "2.2.0",
-    "description": "TODO: Add your plugin description here",
+    "name": "obsidian-bookshelf",
+    "version": "0.1.0",
+    "description": "A Bookshelf view type for Obsidian Bases - display your notes as a visual bookshelf",
     "author": {
-        "name": "Your Name",
-        "email": "your-email@example.com",
-        "url": "https://your-website.com"
+        "name": "Sébastien Dubois",
+        "email": "sebastien@dsebastien.net",
+        "url": "https://dsebastien.net"
     },
     "keywords": [
         "obsidian",
-        "obsidian-plugin"
+        "obsidian-plugin",
+        "bookshelf",
+        "bases",
+        "view"
     ],
     "license": "MIT",
     "private": true,
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/your-username/obsidian-my-plugin.git"
+        "url": "git+https://github.com/dsebastien/obsidian-bookshelf.git"
     },
     "bugs": {
-        "url": "https://github.com/your-username/obsidian-my-plugin/issues"
+        "url": "https://github.com/dsebastien/obsidian-bookshelf/issues"
     },
-    "homepage": "https://github.com/your-username/obsidian-my-plugin",
+    "homepage": "https://github.com/dsebastien/obsidian-bookshelf",
     "engines": {
         "node": ">=20.0.0",
         "npm": ">=10.1.0"
