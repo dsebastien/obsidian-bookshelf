@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars, no-undef, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * Type declarations for Obsidian Bases API
  * These types are not yet exported from the official obsidian package
