@@ -1,6 +1,6 @@
 import { BasesView, Menu } from 'obsidian'
 import type { QueryController, BasesEntry, BasesEntryGroup } from 'obsidian'
-import type { MyPlugin } from '../plugin'
+import type { BookshelfPlugin } from '../plugin'
 
 // Type declarations are loaded from src/app/types/bases.d.ts
 
@@ -30,7 +30,7 @@ export class BookshelfView extends BasesView {
 
     private containerEl: HTMLElement
 
-    constructor(controller: QueryController, scrollEl: HTMLElement, _plugin: MyPlugin) {
+    constructor(controller: QueryController, scrollEl: HTMLElement, _plugin: BookshelfPlugin) {
         super(controller)
         // Plugin reference available via _plugin if needed in future
         this.containerEl = scrollEl.createDiv({ cls: 'bookshelf-container' })

@@ -1,7 +1,7 @@
 import { Plugin } from 'obsidian'
 import { DEFAULT_SETTINGS } from './types/plugin-settings.intf'
 import type { PluginSettings } from './types/plugin-settings.intf'
-import { MyPluginSettingTab } from './settings/settings-tab'
+import { BookshelfPluginSettingTab } from './settings/settings-tab'
 import { log } from '../utils/log'
 import { produce } from 'immer'
 import type { Draft } from 'immer'
@@ -9,7 +9,7 @@ import { BookshelfView, BOOKSHELF_VIEW_TYPE } from './view/bookshelf-view'
 import { getBookshelfViewOptions } from './view/view-options'
 
 // TODO: Rename this class to match your plugin name (e.g., MyAwesomePlugin)
-export class MyPlugin extends Plugin {
+export class BookshelfPlugin extends Plugin {
     /**
      * The plugin settings are immutable
      */
@@ -26,7 +26,7 @@ export class MyPlugin extends Plugin {
         this.registerBookshelfView()
 
         // Add a settings screen for the plugin
-        this.addSettingTab(new MyPluginSettingTab(this.app, this))
+        this.addSettingTab(new BookshelfPluginSettingTab(this.app, this))
     }
 
     override onunload() {}

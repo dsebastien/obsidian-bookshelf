@@ -1,14 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, no-undef, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-empty-object-type */
 /**
  * Type declarations for Obsidian Bases API
  * These types are not yet exported from the official obsidian package
  * Based on the Custom Base View Type Expert Prompt documentation
  */
 
-import 'obsidian'
+import type { Component, TFile, Plugin } from 'obsidian'
 
 declare module 'obsidian' {
-    // Forward declaration of Component for BasesView
-    export { Component }
     /**
      * Property ID format for Bases
      */
@@ -51,7 +50,7 @@ declare module 'obsidian' {
      */
     interface BasesEntry {
         file: TFile
-        getValue(propId: BasesPropertyId | string): Value | null
+        getValue(propId: string): Value | null
     }
 
     /**
@@ -88,14 +87,17 @@ declare module 'obsidian' {
         set(key: string, value: unknown): void
         getOrder(): BasesPropertyId[]
         getSort(): BasesSortConfig[]
-        getDisplayName(propId: BasesPropertyId | string): string
+        getDisplayName(propId: string): string
         getAsPropertyId(key: string): BasesPropertyId | null
     }
 
     /**
      * Query controller for executing queries
      */
-    interface QueryController {}
+    interface QueryController {
+        // Marker interface for query execution context
+        readonly _brand?: 'QueryController'
+    }
 
     /**
      * View option types
