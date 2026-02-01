@@ -38,8 +38,7 @@ export class BookshelfPlugin extends Plugin {
         const registered = this.registerBasesView(BOOKSHELF_VIEW_TYPE, {
             name: 'Bookshelf',
             icon: 'book-open',
-            factory: (controller, containerEl) =>
-                new BookshelfView(controller, containerEl, this),
+            factory: (controller, containerEl) => new BookshelfView(controller, containerEl, this),
             options: getBookshelfViewOptions
         })
 

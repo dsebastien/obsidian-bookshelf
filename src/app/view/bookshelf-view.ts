@@ -11,10 +11,10 @@ type ReadingStatus = 'reading' | 'want-to-read' | 'finished'
 
 /** Status display configuration */
 const STATUS_CONFIG: Record<ReadingStatus | 'unknown', { label: string; icon: string }> = {
-    reading: { label: '📖 Currently Reading', icon: '📖' },
+    'reading': { label: '📖 Currently Reading', icon: '📖' },
     'want-to-read': { label: '📚 Want to Read', icon: '📚' },
-    finished: { label: '✅ Finished', icon: '✅' },
-    unknown: { label: '📕 Uncategorized', icon: '📕' }
+    'finished': { label: '✅ Finished', icon: '✅' },
+    'unknown': { label: '📕 Uncategorized', icon: '📕' }
 }
 
 /** Order for displaying status groups */
