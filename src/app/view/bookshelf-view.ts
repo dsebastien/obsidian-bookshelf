@@ -28,12 +28,11 @@ const STATUS_ORDER: (ReadingStatus | 'unknown')[] = [
 export class BookshelfView extends BasesView {
     type = BOOKSHELF_VIEW_TYPE
 
-    private plugin: MyPlugin
     private containerEl: HTMLElement
 
-    constructor(controller: QueryController, scrollEl: HTMLElement, plugin: MyPlugin) {
+    constructor(controller: QueryController, scrollEl: HTMLElement, _plugin: MyPlugin) {
         super(controller)
-        this.plugin = plugin
+        // Plugin reference available via _plugin if needed in future
         this.containerEl = scrollEl.createDiv({ cls: 'bookshelf-container' })
     }
 
@@ -129,8 +128,11 @@ export class BookshelfView extends BasesView {
         }
     ): void {
         for (const group of groups) {
-            const label = group.value?.toString() ?? 'Ungrouped'
-            this.renderShelf(group.data, label, options)
+            // Access group properties with type assertions for Bases API compatibility
+            const groupValue = (group as { value?: { toString(): string } }).value
+            const groupData = (group as { data?: BasesEntry[] }).data ?? []
+            const label = groupValue?.toString() ?? 'Ungrouped'
+            this.renderShelf(groupData, label, options)
         }
     }
 
