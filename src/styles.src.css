@@ -509,6 +509,12 @@
         font-size: 0.8rem;
     }
 
+    /* Rating property - displayed in yellow/gold */
+    .bookshelf-book-property.bookshelf-book-property--rating {
+        color: #f5c518 !important;
+        font-weight: 600;
+    }
+
     /* Wikilinks in properties */
     .bookshelf-link {
         color: var(--link-color);

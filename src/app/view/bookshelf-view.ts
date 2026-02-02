@@ -165,7 +165,10 @@ export class BookshelfView extends BasesView {
 
         // Get cover from configured property or fall back to 'note.cover'
         const coverPropId = options.coverProperty ?? 'note.cover'
-        const coverValue = entry.getValue(coverPropId)?.toString() ?? ''
+        const rawCoverValue = entry.getValue(coverPropId)
+        // Skip if property doesn't exist or is null
+        const coverValue =
+            !rawCoverValue || rawCoverValue instanceof NullValue ? '' : rawCoverValue.toString()
         const coverUrl = this.resolveCoverUrl(coverValue)
 
         // Book cover/spine
@@ -213,15 +216,25 @@ export class BookshelfView extends BasesView {
 
             const displayName = this.config.getDisplayName(propId)
 
+            // Check if this is a rating property
+            const isRating =
+                propId.toLowerCase().includes('rating') ||
+                displayName.toLowerCase().includes('rating')
+
             // Always render property element to maintain consistent block height
+            const propClasses = ['bookshelf-book-property']
+            if (isRating) {
+                propClasses.push('bookshelf-book-property--rating')
+            }
+
             const propEl = infoEl.createDiv({
-                cls: 'bookshelf-book-property',
+                cls: propClasses.join(' '),
                 title: valueStr ? `${displayName}: ${valueStr}` : displayName
             })
 
             if (valueStr) {
                 // Render property with clickable wikilinks
-                this.renderPropertyValue(propEl, valueStr)
+                this.renderPropertyValue(propEl, valueStr, entry.file.path)
             } else {
                 // Use non-breaking space to preserve line height for empty values
                 propEl.textContent = '\u00A0'
@@ -232,7 +245,7 @@ export class BookshelfView extends BasesView {
     /**
      * Render a property value with clickable wikilinks
      */
-    private renderPropertyValue(container: HTMLElement, value: string): void {
+    private renderPropertyValue(container: HTMLElement, value: string, sourcePath: string): void {
         // Regex to match wikilinks: [[link]] or [[link|display]]
         const wikiLinkRegex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g
 
@@ -250,7 +263,7 @@ export class BookshelfView extends BasesView {
             const displayText = match[2] ?? linkPath
 
             const linkEl = container.createEl('a', {
-                cls: 'bookshelf-link',
+                cls: 'bookshelf-link internal-link',
                 text: displayText,
                 href: linkPath
             })
@@ -259,7 +272,7 @@ export class BookshelfView extends BasesView {
             linkEl.addEventListener('click', (e) => {
                 e.preventDefault()
                 e.stopPropagation()
-                void this.openLink(linkPath, e.ctrlKey || e.metaKey)
+                void this.openLink(linkPath, sourcePath, e.ctrlKey || e.metaKey)
             })
 
             lastIndex = match.index + match[0].length
@@ -279,8 +292,8 @@ export class BookshelfView extends BasesView {
     /**
      * Open an internal link
      */
-    private async openLink(linkPath: string, newTab: boolean): Promise<void> {
-        const file = this.app.metadataCache.getFirstLinkpathDest(linkPath, '')
+    private async openLink(linkPath: string, sourcePath: string, newTab: boolean): Promise<void> {
+        const file = this.app.metadataCache.getFirstLinkpathDest(linkPath, sourcePath)
         if (file) {
             if (newTab) {
                 await this.app.workspace.getLeaf('tab').openFile(file)
