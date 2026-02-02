@@ -1,11 +1,11 @@
 import { App, PluginSettingTab, Setting } from 'obsidian'
-import type MyPlugin from '../../main'
+import type BookshelfPlugin from '../../main'
 
 // TODO: Rename this class to match your plugin name (e.g., MyAwesomePluginSettingTab)
-export class MyPluginSettingTab extends PluginSettingTab {
-    plugin: MyPlugin
+export class BookshelfPluginSettingTab extends PluginSettingTab {
+    plugin: BookshelfPlugin
 
-    constructor(app: App, plugin: MyPlugin) {
+    constructor(app: App, plugin: BookshelfPlugin) {
         super(app, plugin)
         this.plugin = plugin
     }

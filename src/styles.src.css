@@ -1,10 +1,529 @@
-@import 'tailwindcss';
+/* Tailwind CSS Configuration for Obsidian Plugin
+   - No preflight: prevents resetting Obsidian's base styles and other plugins
+   - Theme reference: provides values for utilities without adding CSS variables to :root
+   - Uses CSS layers to isolate styles from other plugins */
 
-/* ========================================
-   SUPPORT & UI SECTIONS
-   ======================================== */
+/* Define layer order for cascade isolation */
+@layer bs-base, bs-components, bs-utilities;
 
-/* Support section */
-.support-header-margin {
-    @apply mb-5;
+@import 'tailwindcss/theme' layer(theme) theme(reference);
+@import 'tailwindcss/utilities' layer(bs-utilities);
+
+/* All custom plugin styles go in bs-components layer for proper cascade isolation */
+@layer bs-components {
+    /* ========================================
+       SUPPORT & UI SECTIONS
+       ======================================== */
+
+    /* Support section */
+    .support-header-margin {
+        @apply mb-5;
+    }
+
+    /* ========================================
+       BOOKSHELF VIEW
+       ======================================== */
+
+    /* Container */
+    .bookshelf-container {
+        @apply flex flex-col gap-10 p-6;
+        --book-width: 150px;
+        --book-height: 150px;
+        --book-gap: 20px;
+        --row-gap: 48px;
+        --image-fit: contain;
+    }
+
+    /* Empty state */
+    .bookshelf-empty {
+        @apply flex flex-col items-center justify-center py-20 gap-5;
+    }
+
+    .bookshelf-empty-icon {
+        @apply text-7xl opacity-60;
+        filter: grayscale(30%);
+    }
+
+    .bookshelf-empty-text {
+        @apply text-xl font-medium;
+        color: var(--text-normal);
+    }
+
+    .bookshelf-empty-hint {
+        @apply text-sm max-w-md text-center;
+        color: var(--text-muted);
+    }
+
+    /* Shelf section */
+    .bookshelf-section {
+        @apply flex flex-col gap-4;
+    }
+
+    /* Shelf header */
+    .bookshelf-header {
+        @apply flex items-center justify-between px-3;
+    }
+
+    .bookshelf-header-label {
+        @apply text-base font-semibold tracking-wide;
+        color: var(--text-normal);
+    }
+
+    .bookshelf-header-count {
+        @apply text-sm px-2.5 py-0.5 rounded-full;
+        color: var(--text-muted);
+        background-color: var(--background-secondary);
+    }
+
+    /* Shelf (the actual shelf with books) */
+    .bookshelf-shelf {
+        @apply relative rounded-xl;
+        padding: 24px 24px 56px 24px;
+        min-height: calc(var(--book-height) + 120px);
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        background-color: #c19a6b;
+        background-size: 200px 200px;
+        background-repeat: repeat;
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.2),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.15),
+            0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Shelf surface shadow line where books sit */
+    .bookshelf-shelf::before {
+        @apply absolute left-6 right-6;
+        content: '';
+        bottom: 56px;
+        height: 8px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.15), transparent);
+        pointer-events: none;
+    }
+
+    /* Shelf front ledge - appears in front of books */
+    .bookshelf-shelf::after {
+        @apply absolute bottom-0 left-0 right-0 rounded-b-xl;
+        content: '';
+        height: 40px;
+        background-color: #a67c52;
+        background-size: 200px 200px;
+        background-repeat: repeat;
+        z-index: 10;
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    /* ========================================
+       WOOD TEXTURES - SVG with realistic grain
+       ======================================== */
+
+    /* Wood grain texture - oak color */
+    [data-shelf-texture='oak'] .bookshelf-shelf {
+        background-color: #c19a6b;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .12' numOctaves='3' seed='5'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.18'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%23c19a6b'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%235a3d20'/%3E%3C/svg%3E");
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.2),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.15),
+            0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    [data-shelf-texture='oak'] .bookshelf-shelf::after {
+        background-color: #a67c52;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .12' numOctaves='3' seed='5'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.18'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%23a67c52'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%234a3215'/%3E%3C/svg%3E");
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    /* Walnut - dark rich brown */
+    [data-shelf-texture='walnut'] .bookshelf-shelf {
+        background-color: #5d4037;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.015 .1' numOctaves='4' seed='8'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.22'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%235d4037'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%231a0f08'/%3E%3C/svg%3E");
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.1),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.2),
+            0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-shelf-texture='walnut'] .bookshelf-shelf::after {
+        background-color: #4a322a;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.015 .1' numOctaves='4' seed='8'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.22'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%234a322a'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23100805'/%3E%3C/svg%3E");
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /* Cherry - warm reddish */
+    [data-shelf-texture='cherry'] .bookshelf-shelf {
+        background-color: #9e4a3a;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .11' numOctaves='3' seed='12'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%239e4a3a'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23401510'/%3E%3C/svg%3E");
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.12),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.15),
+            0 4px 16px rgba(0, 0, 0, 0.28);
+    }
+
+    [data-shelf-texture='cherry'] .bookshelf-shelf::after {
+        background-color: #7d3a2d;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .11' numOctaves='3' seed='12'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%237d3a2d'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23301008'/%3E%3C/svg%3E");
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.32),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    /* Mahogany - deep reddish-brown */
+    [data-shelf-texture='mahogany'] .bookshelf-shelf {
+        background-color: #6b3a2e;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='4' seed='15'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%236b3a2e'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23200a05'/%3E%3C/svg%3E");
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.1),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.18),
+            0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-shelf-texture='mahogany'] .bookshelf-shelf::after {
+        background-color: #522c23;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='4' seed='15'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%23522c23'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23150503'/%3E%3C/svg%3E");
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.35),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /* Pine - light natural */
+    [data-shelf-texture='pine'] .bookshelf-shelf {
+        background-color: #d4b896;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.025 .15' numOctaves='3' seed='20'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.15'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%23d4b896'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%236b4820'/%3E%3C/svg%3E");
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.25),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.1),
+            0 4px 16px rgba(0, 0, 0, 0.22);
+    }
+
+    [data-shelf-texture='pine'] .bookshelf-shelf::after {
+        background-color: #b89b78;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.025 .15' numOctaves='3' seed='20'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.15'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%23b89b78'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%235a3815'/%3E%3C/svg%3E");
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.26),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    }
+
+    /* Ebony - near black */
+    [data-shelf-texture='ebony'] .bookshelf-shelf {
+        background-color: #1a1816;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.01 .08' numOctaves='4' seed='25'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.12'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%231a1816'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23000'/%3E%3C/svg%3E");
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.06),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.25),
+            0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    [data-shelf-texture='ebony'] .bookshelf-shelf::after {
+        background-color: #0d0c0b;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.01 .08' numOctaves='4' seed='25'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.12'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%230d0c0b'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23000'/%3E%3C/svg%3E");
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.45),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    /* ========================================
+       METAL TEXTURES - brushed effect
+       ======================================== */
+
+    /* Brushed Metal - silver aluminum */
+    [data-shelf-texture='metal'] .bookshelf-shelf {
+        background-color: #b5b5b5;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.4 .005' numOctaves='4' seed='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff' stop-opacity='.12'/%3E%3Cstop offset='50%25' stop-color='%23fff' stop-opacity='0'/%3E%3Cstop offset='100%25' stop-color='%23000' stop-opacity='.08'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='400' fill='%23b5b5b5'/%3E%3Crect width='800' height='400' filter='url(%23n)' fill='%23666'/%3E%3Crect width='800' height='400' fill='url(%23g)'/%3E%3C/svg%3E");
+        background-size: cover;
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.4),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.15),
+            0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    [data-shelf-texture='metal'] .bookshelf-shelf::after {
+        background-color: #9a9a9a;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='100'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.4 .005' numOctaves='4' seed='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='800' height='100' fill='%239a9a9a'/%3E%3Crect width='800' height='100' filter='url(%23n)' fill='%23555'/%3E%3C/svg%3E");
+        background-size: cover;
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    /* Dark Metal - industrial steel */
+    [data-shelf-texture='dark-metal'] .bookshelf-shelf {
+        background-color: #454545;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.3 .004' numOctaves='4' seed='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.08'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff' stop-opacity='.06'/%3E%3Cstop offset='100%25' stop-color='%23000' stop-opacity='.1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='400' fill='%23454545'/%3E%3Crect width='800' height='400' filter='url(%23n)' fill='%23222'/%3E%3Crect width='800' height='400' fill='url(%23g)'/%3E%3C/svg%3E");
+        background-size: cover;
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.15),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.2),
+            0 4px 16px rgba(0, 0, 0, 0.32);
+    }
+
+    [data-shelf-texture='dark-metal'] .bookshelf-shelf::after {
+        background-color: #353535;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='100'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.3 .004' numOctaves='4' seed='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.08'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='800' height='100' fill='%23353535'/%3E%3Crect width='800' height='100' filter='url(%23n)' fill='%23111'/%3E%3C/svg%3E");
+        background-size: cover;
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.38),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    /* ========================================
+       STONE TEXTURES - marble and concrete
+       ======================================== */
+
+    /* White Marble - with veining */
+    [data-shelf-texture='white-marble'] .bookshelf-shelf {
+        background-color: #f0ede8;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='.008' numOctaves='4' seed='8'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.15'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='300' height='300' fill='%23f0ede8'/%3E%3Cg opacity='.12' fill='none' stroke='%238a8580' stroke-width='1'%3E%3Cpath d='M0,50 Q80,30 150,80 T300,60'/%3E%3Cpath d='M20,120 Q100,90 180,140 T300,100'/%3E%3Cpath d='M0,180 Q60,200 140,170 T280,210'/%3E%3Cpath d='M50,250 Q120,220 200,270 T300,240'/%3E%3C/g%3E%3Crect width='300' height='300' filter='url(%23n)' fill='%23888'/%3E%3C/svg%3E");
+        background-size: 300px 300px;
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.6),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.06),
+            0 4px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    [data-shelf-texture='white-marble'] .bookshelf-shelf::after {
+        background-color: #e0ddd8;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='.008' numOctaves='4' seed='8'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.15'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='300' height='300' fill='%23e0ddd8'/%3E%3Cg opacity='.1' fill='none' stroke='%237a7570' stroke-width='1'%3E%3Cpath d='M0,40 Q70,60 150,30 T300,50'/%3E%3Cpath d='M30,100 Q90,80 170,110 T300,90'/%3E%3C/g%3E%3Crect width='300' height='300' filter='url(%23n)' fill='%23777'/%3E%3C/svg%3E");
+        background-size: 300px 300px;
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.18),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    /* Black Marble - with gold veining */
+    [data-shelf-texture='black-marble'] .bookshelf-shelf {
+        background-color: #1c1c1c;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='.006' numOctaves='3' seed='10'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.08'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='300' height='300' fill='%231c1c1c'/%3E%3Cg opacity='.2' fill='none' stroke='%23b8a060' stroke-width='.8'%3E%3Cpath d='M0,60 Q90,40 160,90 T300,70'/%3E%3Cpath d='M30,150 Q110,120 190,170 T300,140'/%3E%3Cpath d='M0,220 Q70,250 150,200 T300,230'/%3E%3C/g%3E%3Cg opacity='.1' fill='none' stroke='%23fff' stroke-width='.5'%3E%3Cpath d='M20,30 Q80,50 140,25 T280,45'/%3E%3Cpath d='M0,110 Q60,90 130,120 T260,100'/%3E%3Cpath d='M40,190 Q100,210 170,180 T300,200'/%3E%3Cpath d='M10,270 Q80,250 160,280 T300,260'/%3E%3C/g%3E%3Crect width='300' height='300' filter='url(%23n)' fill='%23333'/%3E%3C/svg%3E");
+        background-size: 300px 300px;
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.08),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.25),
+            0 4px 16px rgba(0, 0, 0, 0.38);
+    }
+
+    [data-shelf-texture='black-marble'] .bookshelf-shelf::after {
+        background-color: #0f0f0f;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='turbulence' baseFrequency='.006' numOctaves='3' seed='10'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.08'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='300' height='300' fill='%230f0f0f'/%3E%3Cg opacity='.18' fill='none' stroke='%23a89050' stroke-width='.7'%3E%3Cpath d='M0,50 Q80,70 150,40 T300,60'/%3E%3Cpath d='M20,120 Q90,100 160,130 T280,110'/%3E%3C/g%3E%3Crect width='300' height='300' filter='url(%23n)' fill='%23222'/%3E%3C/svg%3E");
+        background-size: 300px 300px;
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.42),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    /* Concrete - rough industrial */
+    [data-shelf-texture='concrete'] .bookshelf-shelf {
+        background-color: #7a7a7a;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' seed='12'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Cfilter id='p'%3E%3CfeTurbulence type='turbulence' baseFrequency='.1' numOctaves='2' seed='20'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.06'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%237a7a7a'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23444'/%3E%3Crect width='200' height='200' filter='url(%23p)' fill='%23222'/%3E%3C/svg%3E");
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.12),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.12),
+            0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    [data-shelf-texture='concrete'] .bookshelf-shelf::after {
+        background-color: #626262;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' seed='12'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.2'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%23626262'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23333'/%3E%3C/svg%3E");
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    /* Slate - layered dark stone */
+    [data-shelf-texture='slate'] .bookshelf-shelf {
+        background-color: #3a3a3a;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.4' numOctaves='4' seed='30'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.15'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%233a3a3a'/%3E%3Cg opacity='.1'%3E%3Cline x1='0' y1='20' x2='200' y2='22' stroke='%23000' stroke-width='1'/%3E%3Cline x1='0' y1='55' x2='200' y2='53' stroke='%23555' stroke-width='.5'/%3E%3Cline x1='0' y1='85' x2='200' y2='87' stroke='%23000' stroke-width='1'/%3E%3Cline x1='0' y1='120' x2='200' y2='118' stroke='%23555' stroke-width='.5'/%3E%3Cline x1='0' y1='155' x2='200' y2='157' stroke='%23000' stroke-width='1'/%3E%3Cline x1='0' y1='185' x2='200' y2='183' stroke='%23555' stroke-width='.5'/%3E%3C/g%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23222'/%3E%3C/svg%3E");
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.1),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.18),
+            0 4px 16px rgba(0, 0, 0, 0.32);
+    }
+
+    [data-shelf-texture='slate'] .bookshelf-shelf::after {
+        background-color: #2a2a2a;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.4' numOctaves='4' seed='30'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.15'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%232a2a2a'/%3E%3Cg opacity='.08'%3E%3Cline x1='0' y1='15' x2='200' y2='17' stroke='%23000' stroke-width='1'/%3E%3Cline x1='0' y1='45' x2='200' y2='43' stroke='%23444' stroke-width='.5'/%3E%3C/g%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23111'/%3E%3C/svg%3E");
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.38),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /* Books row - positioned so books sit on shelf */
+    .bookshelf-books {
+        @apply flex flex-wrap justify-center items-end relative;
+        column-gap: var(--book-gap);
+        row-gap: var(--row-gap);
+        min-height: var(--book-height);
+        padding-bottom: 8px;
+        z-index: 5;
+    }
+
+    /* Empty shelf message */
+    .bookshelf-shelf-empty {
+        @apply flex items-center justify-center w-full italic;
+        height: var(--book-height);
+        color: var(--text-faint);
+        z-index: 5;
+    }
+
+    /* ========================================
+       BOOK CARDS - Hardcover Effect
+       ======================================== */
+
+    /* Book wrapper */
+    .bookshelf-book {
+        @apply flex flex-col relative;
+        width: var(--book-width);
+        overflow: visible;
+    }
+
+    /* Book base shadow - makes it look grounded on shelf */
+    .bookshelf-book::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 5%;
+        right: 5%;
+        height: 10px;
+        background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.4) 0%, transparent 70%);
+        transform: translateY(4px);
+        z-index: -1;
+    }
+
+    /* Book cover - hardcover effect */
+    .bookshelf-book-cover {
+        @apply relative overflow-visible cursor-pointer;
+        width: var(--book-width);
+        height: var(--book-height);
+        border-radius: 2px 6px 6px 2px;
+        transition:
+            transform 0.15s ease-out,
+            box-shadow 0.15s ease-out;
+        box-shadow:
+            /* Inner highlights for 3D effect */
+            inset 1px 1px 0 1px rgba(255, 255, 255, 0.2),
+            inset 0 0 0 1px rgba(0, 0, 0, 0.1),
+            /* Side shadow - book standing up */ -3px 0 6px -2px rgba(0, 0, 0, 0.4),
+            /* Bottom contact shadow */ 0 2px 4px -1px rgba(0, 0, 0, 0.5),
+            /* Ambient shadow */ -6px 6px 12px -4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Spine gradient effect */
+    .bookshelf-book-cover::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background-image: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0.25),
+            rgba(255, 255, 255, 0.35) 1%,
+            transparent 6%,
+            rgba(0, 0, 0, 0.2) 8%,
+            rgba(255, 255, 255, 0.25) 9%,
+            transparent 20%
+        );
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* Book bottom edge - adds thickness */
+    .bookshelf-book-cover::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
+        border-radius: 0 0 2px 2px;
+        pointer-events: none;
+    }
+
+    /* Hover effect on cover */
+    .bookshelf-book-cover:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow:
+            inset 1px 1px 0 1px rgba(255, 255, 255, 0.2),
+            inset 0 0 0 1px rgba(0, 0, 0, 0.1),
+            -4px 2px 10px -2px rgba(0, 0, 0, 0.4),
+            0 12px 20px -8px rgba(0, 0, 0, 0.5),
+            -10px 14px 24px -6px rgba(0, 0, 0, 0.35);
+    }
+
+    .bookshelf-book:hover::before {
+        /* Shadow moves down when book lifts */
+        transform: translateY(12px);
+        opacity: 0.6;
+    }
+
+    /* Cover with image */
+    .bookshelf-book-cover--image {
+        background-size: var(--image-fit);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: var(--background-secondary);
+    }
+
+    /* Spine without image - colored background */
+    .bookshelf-book-cover--spine {
+        @apply flex items-center justify-center;
+    }
+
+    /* Spine title (vertical) */
+    .bookshelf-spine-title {
+        @apply font-semibold px-4 text-center leading-tight;
+        font-size: 1rem;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        transform: rotate(180deg);
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow:
+            1px 1px 3px rgba(0, 0, 0, 0.7),
+            0 0 10px rgba(0, 0, 0, 0.4);
+        max-height: calc(var(--book-height) - 30px);
+        overflow: hidden;
+        letter-spacing: 0.5px;
+        z-index: 2;
+    }
+
+    /* Book info below cover */
+    .bookshelf-book-info {
+        @apply flex flex-col gap-1 pt-3 px-1;
+    }
+
+    .bookshelf-book-property {
+        @apply text-sm truncate;
+        color: var(--text-normal);
+        min-height: 1.2em;
+    }
+
+    .bookshelf-book-property:first-child {
+        @apply font-medium;
+    }
+
+    .bookshelf-book-property:not(:first-child) {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    /* Rating property - displayed in yellow/gold */
+    .bookshelf-book-property.bookshelf-book-property--rating {
+        color: #f5c518 !important;
+        font-weight: 600;
+    }
+
+    /* Wikilinks in properties */
+    .bookshelf-link {
+        color: var(--link-color);
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .bookshelf-link:hover {
+        color: var(--link-color-hover);
+        text-decoration: underline;
+    }
 }

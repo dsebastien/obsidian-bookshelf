@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, readdirSync, watch } from 'node:fs'
-import { join } from 'node:path'
+import { existsSync, lstatSync, mkdirSync, unlinkSync, watch } from 'node:fs'
+import { dirname, join } from 'node:path'
 import { parseArgs } from 'node:util'
 import { $ } from 'bun'
 import { Glob } from 'bun'
@@ -97,6 +97,11 @@ async function copyAssets(): Promise<void> {
     for await (const file of glob.scan({ cwd: ASSETS_SRC, onlyFiles: true })) {
         const src = join(ASSETS_SRC, file)
         const dest = join(DIST, file)
+        // Ensure parent directory exists for nested files
+        const destDir = dirname(dest)
+        if (!existsSync(destDir)) {
+            mkdirSync(destDir, { recursive: true })
+        }
         await Bun.write(dest, Bun.file(src))
         console.log(`  ✓ ${file}`)
     }
@@ -126,10 +131,22 @@ async function copyToVault(): Promise<void> {
 
     console.log(`Copying dist to ${pluginDir}...`)
 
-    const distFiles = readdirSync(DIST)
-    for (const file of distFiles) {
+    // Use glob to recursively find all files (not directories)
+    const glob = new Glob('**/*')
+    for await (const file of glob.scan({ cwd: DIST, onlyFiles: true })) {
         const src = join(DIST, file)
         const dest = join(pluginDir, file)
+        // Ensure parent directory exists for nested files
+        const destDir = dirname(dest)
+        if (existsSync(destDir)) {
+            // If a file exists where we need a directory, remove it
+            if (!lstatSync(destDir).isDirectory()) {
+                unlinkSync(destDir)
+                mkdirSync(destDir, { recursive: true })
+            }
+        } else {
+            mkdirSync(destDir, { recursive: true })
+        }
         await Bun.write(dest, Bun.file(src))
         console.log(`  ✓ ${file}`)
     }
