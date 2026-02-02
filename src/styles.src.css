@@ -77,28 +77,41 @@
 
     /* Shelf (the actual shelf with books) */
     .bookshelf-shelf {
-        @apply relative rounded-xl p-6 pb-12;
-        min-height: calc(var(--book-height) + 100px);
+        @apply relative rounded-xl;
+        padding: 24px 24px 56px 24px;
+        min-height: calc(var(--book-height) + 120px);
         border: 1px solid rgba(0, 0, 0, 0.15);
+        background-color: #c19a6b;
         background-size: 200px 200px;
         background-repeat: repeat;
+        box-shadow:
+            inset 0 2px 8px rgba(255, 255, 255, 0.2),
+            inset 0 -2px 8px rgba(0, 0, 0, 0.15),
+            0 4px 16px rgba(0, 0, 0, 0.25);
     }
 
-    /* Shelf bottom ledge line */
+    /* Shelf surface shadow line where books sit */
     .bookshelf-shelf::before {
-        @apply absolute left-4 right-4 h-px;
+        @apply absolute left-6 right-6;
         content: '';
-        bottom: 48px;
-        background-color: rgba(0, 0, 0, 0.15);
+        bottom: 56px;
+        height: 8px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.15), transparent);
+        pointer-events: none;
     }
 
-    /* Shelf front ledge */
+    /* Shelf front ledge - appears in front of books */
     .bookshelf-shelf::after {
         @apply absolute bottom-0 left-0 right-0 rounded-b-xl;
         content: '';
-        height: 32px;
+        height: 40px;
+        background-color: #a67c52;
         background-size: 200px 200px;
         background-repeat: repeat;
+        z-index: 10;
+        box-shadow:
+            0 6px 12px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     /* ========================================
@@ -220,7 +233,8 @@
     /* Brushed Metal - silver aluminum */
     [data-shelf-texture='metal'] .bookshelf-shelf {
         background-color: #b5b5b5;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.5 .01' numOctaves='4' seed='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.12'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff' stop-opacity='.15'/%3E%3Cstop offset='50%25' stop-color='%23fff' stop-opacity='0'/%3E%3Cstop offset='100%25' stop-color='%23000' stop-opacity='.1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='200' height='200' fill='%23b5b5b5'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23666'/%3E%3Crect width='200' height='200' fill='url(%23g)'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.4 .005' numOctaves='4' seed='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff' stop-opacity='.12'/%3E%3Cstop offset='50%25' stop-color='%23fff' stop-opacity='0'/%3E%3Cstop offset='100%25' stop-color='%23000' stop-opacity='.08'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='400' fill='%23b5b5b5'/%3E%3Crect width='800' height='400' filter='url(%23n)' fill='%23666'/%3E%3Crect width='800' height='400' fill='url(%23g)'/%3E%3C/svg%3E");
+        background-size: cover;
         box-shadow:
             inset 0 2px 8px rgba(255, 255, 255, 0.4),
             inset 0 -2px 8px rgba(0, 0, 0, 0.15),
@@ -229,7 +243,8 @@
 
     [data-shelf-texture='metal'] .bookshelf-shelf::after {
         background-color: #9a9a9a;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.5 .01' numOctaves='4' seed='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.12'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%239a9a9a'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23555'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='100'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.4 .005' numOctaves='4' seed='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='800' height='100' fill='%239a9a9a'/%3E%3Crect width='800' height='100' filter='url(%23n)' fill='%23555'/%3E%3C/svg%3E");
+        background-size: cover;
         box-shadow:
             0 6px 12px rgba(0, 0, 0, 0.28),
             inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -238,7 +253,8 @@
     /* Dark Metal - industrial steel */
     [data-shelf-texture='dark-metal'] .bookshelf-shelf {
         background-color: #454545;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.4 .01' numOctaves='4' seed='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff' stop-opacity='.08'/%3E%3Cstop offset='100%25' stop-color='%23000' stop-opacity='.12'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='200' height='200' fill='%23454545'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23222'/%3E%3Crect width='200' height='200' fill='url(%23g)'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.3 .004' numOctaves='4' seed='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.08'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fff' stop-opacity='.06'/%3E%3Cstop offset='100%25' stop-color='%23000' stop-opacity='.1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='400' fill='%23454545'/%3E%3Crect width='800' height='400' filter='url(%23n)' fill='%23222'/%3E%3Crect width='800' height='400' fill='url(%23g)'/%3E%3C/svg%3E");
+        background-size: cover;
         box-shadow:
             inset 0 2px 8px rgba(255, 255, 255, 0.15),
             inset 0 -2px 8px rgba(0, 0, 0, 0.2),
@@ -247,7 +263,8 @@
 
     [data-shelf-texture='dark-metal'] .bookshelf-shelf::after {
         background-color: #353535;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.4 .01' numOctaves='4' seed='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='200' height='200' fill='%23353535'/%3E%3Crect width='200' height='200' filter='url(%23n)' fill='%23111'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='100'%3E%3Cdefs%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.3 .004' numOctaves='4' seed='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='.08'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3C/defs%3E%3Crect width='800' height='100' fill='%23353535'/%3E%3Crect width='800' height='100' filter='url(%23n)' fill='%23111'/%3E%3C/svg%3E");
+        background-size: cover;
         box-shadow:
             0 6px 12px rgba(0, 0, 0, 0.38),
             inset 0 1px 0 rgba(255, 255, 255, 0.12);
@@ -333,13 +350,14 @@
             inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
-    /* Books row */
+    /* Books row - positioned so books sit on shelf */
     .bookshelf-books {
         @apply flex flex-wrap justify-center items-end relative;
         column-gap: var(--book-gap);
         row-gap: var(--row-gap);
         min-height: var(--book-height);
-        padding-bottom: 12px;
+        padding-bottom: 8px;
+        z-index: 5;
     }
 
     /* Empty shelf message */
@@ -347,6 +365,7 @@
         @apply flex items-center justify-center w-full italic;
         height: var(--book-height);
         color: var(--text-faint);
+        z-index: 5;
     }
 
     /* ========================================
@@ -355,9 +374,22 @@
 
     /* Book wrapper */
     .bookshelf-book {
-        @apply flex flex-col;
+        @apply flex flex-col relative;
         width: var(--book-width);
         overflow: visible;
+    }
+
+    /* Book base shadow - makes it look grounded on shelf */
+    .bookshelf-book::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 5%;
+        right: 5%;
+        height: 10px;
+        background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.4) 0%, transparent 70%);
+        transform: translateY(4px);
+        z-index: -1;
     }
 
     /* Book cover - hardcover effect */
@@ -370,10 +402,12 @@
             transform 0.15s ease-out,
             box-shadow 0.15s ease-out;
         box-shadow:
+            /* Inner highlights for 3D effect */
             inset 1px 1px 0 1px rgba(255, 255, 255, 0.2),
             inset 0 0 0 1px rgba(0, 0, 0, 0.1),
-            -4px 2px 4px 0 rgba(0, 0, 0, 0.3),
-            -8px 8px 20px 0 rgba(0, 0, 0, 0.2);
+            /* Side shadow - book standing up */ -3px 0 6px -2px rgba(0, 0, 0, 0.4),
+            /* Bottom contact shadow */ 0 2px 4px -1px rgba(0, 0, 0, 0.5),
+            /* Ambient shadow */ -6px 6px 12px -4px rgba(0, 0, 0, 0.3);
     }
 
     /* Spine gradient effect */
@@ -384,25 +418,45 @@
         border-radius: inherit;
         background-image: linear-gradient(
             to right,
-            rgba(0, 0, 0, 0.2),
-            rgba(255, 255, 255, 0.3) 1%,
+            rgba(0, 0, 0, 0.25),
+            rgba(255, 255, 255, 0.35) 1%,
             transparent 6%,
-            rgba(0, 0, 0, 0.15) 8%,
-            rgba(255, 255, 255, 0.2) 9%,
+            rgba(0, 0, 0, 0.2) 8%,
+            rgba(255, 255, 255, 0.25) 9%,
             transparent 20%
         );
         pointer-events: none;
         z-index: 1;
     }
 
+    /* Book bottom edge - adds thickness */
+    .bookshelf-book-cover::after {
+        content: '';
+        position: absolute;
+        bottom: -3px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
+        border-radius: 0 0 2px 2px;
+        pointer-events: none;
+    }
+
     /* Hover effect on cover */
     .bookshelf-book-cover:hover {
-        transform: translateY(-6px) scale(1.03);
+        transform: translateY(-8px) scale(1.02);
         box-shadow:
             inset 1px 1px 0 1px rgba(255, 255, 255, 0.2),
             inset 0 0 0 1px rgba(0, 0, 0, 0.1),
-            -4px 4px 8px 0 rgba(0, 0, 0, 0.3),
-            -12px 16px 30px 0 rgba(0, 0, 0, 0.3);
+            -4px 2px 10px -2px rgba(0, 0, 0, 0.4),
+            0 12px 20px -8px rgba(0, 0, 0, 0.5),
+            -10px 14px 24px -6px rgba(0, 0, 0, 0.35);
+    }
+
+    .bookshelf-book:hover::before {
+        /* Shadow moves down when book lifts */
+        transform: translateY(12px);
+        opacity: 0.6;
     }
 
     /* Cover with image */
