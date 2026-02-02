@@ -243,7 +243,7 @@ export class BookshelfView extends BasesView {
     }
 
     /**
-     * Render a property value with clickable wikilinks
+     * Render a property value with clickable wikilinks using Obsidian's standard link handling
      */
     private renderPropertyValue(container: HTMLElement, value: string, sourcePath: string): void {
         // Regex to match wikilinks: [[link]] or [[link|display]]
@@ -258,21 +258,30 @@ export class BookshelfView extends BasesView {
                 container.appendText(value.slice(lastIndex, match.index))
             }
 
-            // Create clickable link
+            // Create clickable link using Obsidian's standard internal-link format
             const linkPath = match[1] ?? ''
             const displayText = match[2] ?? linkPath
 
             const linkEl = container.createEl('a', {
-                cls: 'bookshelf-link internal-link',
+                cls: 'internal-link',
                 text: displayText,
-                href: linkPath
+                attr: {
+                    'data-href': linkPath,
+                    'href': linkPath,
+                    'target': '_blank',
+                    'rel': 'noopener'
+                }
             })
 
-            // Handle click
+            // Use Obsidian's openLinkText API for proper link handling
             linkEl.addEventListener('click', (e) => {
                 e.preventDefault()
                 e.stopPropagation()
-                void this.openLink(linkPath, sourcePath, e.ctrlKey || e.metaKey)
+                void this.app.workspace.openLinkText(
+                    linkPath,
+                    sourcePath,
+                    e.ctrlKey || e.metaKey ? 'tab' : false
+                )
             })
 
             lastIndex = match.index + match[0].length
@@ -286,20 +295,6 @@ export class BookshelfView extends BasesView {
         // If no links were found, just set the text
         if (lastIndex === 0) {
             container.setText(value)
-        }
-    }
-
-    /**
-     * Open an internal link
-     */
-    private async openLink(linkPath: string, sourcePath: string, newTab: boolean): Promise<void> {
-        const file = this.app.metadataCache.getFirstLinkpathDest(linkPath, sourcePath)
-        if (file) {
-            if (newTab) {
-                await this.app.workspace.getLeaf('tab').openFile(file)
-            } else {
-                await this.app.workspace.getLeaf().openFile(file)
-            }
         }
     }
 
