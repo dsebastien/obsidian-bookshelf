@@ -1,5 +1,29 @@
 # Release Notes
 
+## 0.1.0 (2026-02-02)
+
+### Features
+
+- add Bookshelf view for Obsidian Bases
+- **all:** added safety checks for cover images
+- **all:** added textures and settings
+- **all:** improved textures
+- **all:** improved visuals
+
+### Bug Fixes
+
+- **all:** fixed links
+- format code with prettier
+- remove unused eslint-disable directives
+- resolve lint errors
+- resolve TypeScript errors
+
+## 2.2.0 (2026-01-30)
+
+### Features
+
+- **all:** updated scripts
+
 ## 2.0.4 (2026-01-04)
 
 ### Bug Fixes
