@@ -1,29 +1,10 @@
-import { BasesView, Menu } from 'obsidian'
+import { BasesView, Menu, NullValue } from 'obsidian'
 import type { QueryController, BasesEntry, BasesEntryGroup } from 'obsidian'
 import type { BookshelfPlugin } from '../plugin'
 
 // Type declarations are loaded from src/app/types/bases.d.ts
 
 export const BOOKSHELF_VIEW_TYPE = 'bookshelf'
-
-/** Reading status values we recognize */
-type ReadingStatus = 'reading' | 'want-to-read' | 'finished'
-
-/** Status display configuration */
-const STATUS_CONFIG: Record<ReadingStatus | 'unknown', { label: string; icon: string }> = {
-    'reading': { label: '📖 Currently Reading', icon: '📖' },
-    'want-to-read': { label: '📚 Want to Read', icon: '📚' },
-    'finished': { label: '✅ Finished', icon: '✅' },
-    'unknown': { label: '📕 Uncategorized', icon: '📕' }
-}
-
-/** Order for displaying status groups */
-const STATUS_ORDER: (ReadingStatus | 'unknown')[] = [
-    'reading',
-    'want-to-read',
-    'finished',
-    'unknown'
-]
 
 export class BookshelfView extends BasesView {
     type = BOOKSHELF_VIEW_TYPE
@@ -38,6 +19,7 @@ export class BookshelfView extends BasesView {
 
     /**
      * Called when data changes - main render logic
+     * Follows Base groupings if present, otherwise renders all books on a single shelf
      */
     override onDataUpdated(): void {
         this.containerEl.empty()
@@ -46,20 +28,30 @@ export class BookshelfView extends BasesView {
         const groups = this.data.groupedData
 
         // Get configuration
-        const shelfHeight = (this.config.get('shelfHeight') as number) ?? 180
-        const bookWidth = (this.config.get('bookWidth') as number) ?? 100
-        const showTitles = (this.config.get('showTitles') as boolean) ?? true
-        const showAuthors = (this.config.get('showAuthors') as boolean) ?? false
-        const showRatings = (this.config.get('showRatings') as boolean) ?? true
-        const groupByStatus = (this.config.get('groupByStatus') as boolean) ?? true
-        const showEmptyGroups = (this.config.get('showEmptyGroups') as boolean) ?? false
-        const showShelfWood = (this.config.get('showShelfWood') as boolean) ?? true
-        const bookGap = (this.config.get('bookGap') as number) ?? 8
+        const cardSize = (this.config.get('cardSize') as number) ?? 150
+        const bookGap = (this.config.get('bookGap') as number) ?? 20
+
+        // Shelf settings
+        const shelfTexture = (this.config.get('shelfTexture') as string) ?? 'oak'
+
+        // Cover settings
+        const coverProperty = this.config.getAsPropertyId('coverProperty')
+        const imageFit = (this.config.get('imageFit') as string) ?? 'contain'
+        const aspectRatio = (this.config.get('aspectRatio') as number) ?? 1
+
+        // Get visible properties from Base configuration
+        const visibleProperties = this.config.getOrder()
+
+        // Calculate book dimensions based on card size and aspect ratio
+        const bookWidth = cardSize
+        const bookHeight = Math.round(cardSize / aspectRatio)
 
         // Set CSS variables for sizing
-        this.containerEl.style.setProperty('--bookshelf-height', `${shelfHeight}px`)
         this.containerEl.style.setProperty('--book-width', `${bookWidth}px`)
+        this.containerEl.style.setProperty('--book-height', `${bookHeight}px`)
         this.containerEl.style.setProperty('--book-gap', `${bookGap}px`)
+        this.containerEl.style.setProperty('--image-fit', imageFit)
+        this.containerEl.dataset['shelfTexture'] = shelfTexture
 
         // Handle empty state
         if (entries.length === 0) {
@@ -67,34 +59,16 @@ export class BookshelfView extends BasesView {
             return
         }
 
-        // Check if data is already grouped by Bases
+        const renderOptions = {
+            coverProperty,
+            visibleProperties
+        }
+
+        // Use Base groupings if present, otherwise render all books
         if (groups && groups.length > 0) {
-            this.renderBasesGroups(groups, {
-                shelfHeight,
-                showTitles,
-                showAuthors,
-                showRatings,
-                showShelfWood
-            })
-        } else if (groupByStatus) {
-            // Group by status ourselves
-            this.renderStatusGroups(entries, {
-                shelfHeight,
-                showTitles,
-                showAuthors,
-                showRatings,
-                showShelfWood,
-                showEmptyGroups
-            })
+            this.renderBasesGroups(groups, renderOptions)
         } else {
-            // Render as a single shelf
-            this.renderShelf(entries, 'All Books', {
-                shelfHeight,
-                showTitles,
-                showAuthors,
-                showRatings,
-                showShelfWood
-            })
+            this.renderShelf(entries, 'All Books', renderOptions)
         }
     }
 
@@ -120,82 +94,15 @@ export class BookshelfView extends BasesView {
     private renderBasesGroups(
         groups: BasesEntryGroup[],
         options: {
-            shelfHeight: number
-            showTitles: boolean
-            showAuthors: boolean
-            showRatings: boolean
-            showShelfWood: boolean
+            coverProperty: string | null
+            visibleProperties: string[]
         }
     ): void {
         for (const group of groups) {
-            // Access group properties with type assertions for Bases API compatibility
-            const groupValue = (group as { value?: { toString(): string } }).value
-            const groupData = (group as { data?: BasesEntry[] }).data ?? []
-            const label = groupValue?.toString() ?? 'Ungrouped'
-            this.renderShelf(groupData, label, options)
+            const groupEntries = group.entries ?? []
+            const label = group.key?.toString() ?? 'Ungrouped'
+            this.renderShelf(groupEntries, label, options)
         }
-    }
-
-    /**
-     * Group entries by status and render each as a shelf
-     */
-    private renderStatusGroups(
-        entries: BasesEntry[],
-        options: {
-            shelfHeight: number
-            showTitles: boolean
-            showAuthors: boolean
-            showRatings: boolean
-            showShelfWood: boolean
-            showEmptyGroups: boolean
-        }
-    ): void {
-        // Group entries by status
-        const byStatus = new Map<ReadingStatus | 'unknown', BasesEntry[]>()
-
-        for (const entry of entries) {
-            const statusValue = entry.getValue('note.status')
-            const status = this.normalizeStatus(statusValue?.toString() ?? '')
-            const list = byStatus.get(status) ?? []
-            list.push(entry)
-            byStatus.set(status, list)
-        }
-
-        // Render in order
-        for (const status of STATUS_ORDER) {
-            const books = byStatus.get(status) ?? []
-            if (books.length === 0 && !options.showEmptyGroups) {
-                continue
-            }
-
-            const config = STATUS_CONFIG[status]
-            this.renderShelf(books, config.label, options)
-        }
-    }
-
-    /**
-     * Normalize status string to known status type
-     */
-    private normalizeStatus(status: string): ReadingStatus | 'unknown' {
-        const normalized = status.toLowerCase().trim()
-
-        if (normalized === 'reading' || normalized === 'currently reading') {
-            return 'reading'
-        }
-        if (
-            normalized === 'want-to-read' ||
-            normalized === 'want to read' ||
-            normalized === 'to-read' ||
-            normalized === 'to read' ||
-            normalized === 'tbr'
-        ) {
-            return 'want-to-read'
-        }
-        if (normalized === 'finished' || normalized === 'read' || normalized === 'completed') {
-            return 'finished'
-        }
-
-        return 'unknown'
     }
 
     /**
@@ -205,11 +112,8 @@ export class BookshelfView extends BasesView {
         entries: BasesEntry[],
         label: string,
         options: {
-            shelfHeight: number
-            showTitles: boolean
-            showAuthors: boolean
-            showRatings: boolean
-            showShelfWood: boolean
+            coverProperty: string | null
+            visibleProperties: string[]
         }
     ): void {
         const shelfSection = this.containerEl.createDiv({ cls: 'bookshelf-section' })
@@ -224,7 +128,7 @@ export class BookshelfView extends BasesView {
 
         // Shelf container
         const shelfEl = shelfSection.createDiv({
-            cls: `bookshelf-shelf ${options.showShelfWood ? 'bookshelf-shelf--wood' : ''}`
+            cls: 'bookshelf-shelf'
         })
 
         // Books row
@@ -250,27 +154,27 @@ export class BookshelfView extends BasesView {
         container: HTMLElement,
         entry: BasesEntry,
         options: {
-            showTitles: boolean
-            showAuthors: boolean
-            showRatings: boolean
+            coverProperty: string | null
+            visibleProperties: string[]
         }
     ): void {
         const bookEl = container.createDiv({ cls: 'bookshelf-book' })
 
-        // Get book properties
+        // Get title for spine (fallback to filename)
         const title = entry.getValue('note.title')?.toString() ?? entry.file.basename
-        const author = entry.getValue('note.author')?.toString() ?? ''
-        const cover = entry.getValue('note.cover')?.toString() ?? ''
-        const ratingValue = entry.getValue('note.rating')
-        const rating = ratingValue ? parseFloat(ratingValue.toString()) : 0
+
+        // Get cover from configured property or fall back to 'note.cover'
+        const coverPropId = options.coverProperty ?? 'note.cover'
+        const coverValue = entry.getValue(coverPropId)?.toString() ?? ''
+        const coverUrl = this.resolveCoverUrl(coverValue)
 
         // Book cover/spine
         const coverEl = bookEl.createDiv({ cls: 'bookshelf-book-cover' })
 
-        if (cover) {
+        if (coverUrl) {
             // Has cover image
             coverEl.addClass('bookshelf-book-cover--image')
-            coverEl.style.backgroundImage = `url('${cover}')`
+            coverEl.style.backgroundImage = `url('${coverUrl}')`
         } else {
             // Generate a colored spine
             coverEl.addClass('bookshelf-book-cover--spine')
@@ -278,43 +182,130 @@ export class BookshelfView extends BasesView {
 
             // Add vertical title on spine
             const spineTitle = coverEl.createDiv({ cls: 'bookshelf-spine-title' })
-            spineTitle.setText(this.truncateTitle(title, 20))
+            spineTitle.setText(this.truncateTitle(title, 25))
         }
 
-        // Book info overlay/below
-        const infoEl = bookEl.createDiv({ cls: 'bookshelf-book-info' })
-
-        if (options.showTitles) {
-            infoEl.createDiv({
-                cls: 'bookshelf-book-title',
-                text: this.truncateTitle(title, 30),
-                title: title
-            })
-        }
-
-        if (options.showAuthors && author) {
-            infoEl.createDiv({
-                cls: 'bookshelf-book-author',
-                text: author,
-                title: author
-            })
-        }
-
-        if (options.showRatings && rating > 0) {
-            const ratingEl = infoEl.createDiv({ cls: 'bookshelf-book-rating' })
-            ratingEl.setText(this.renderStars(rating))
-        }
-
-        // Click to open file
-        bookEl.addEventListener('click', () => {
-            void this.openFile(entry)
+        // Click on cover to open file (ctrl/cmd+click opens in new tab)
+        coverEl.addEventListener('click', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                void this.openFileInNewTab(entry)
+            } else {
+                void this.openFile(entry)
+            }
         })
 
-        // Right-click context menu
-        bookEl.addEventListener('contextmenu', (e) => {
+        // Right-click context menu on cover
+        coverEl.addEventListener('contextmenu', (e) => {
             e.preventDefault()
             this.showContextMenu(e, entry)
         })
+
+        // Book info - render visible properties from Base configuration
+        const infoEl = bookEl.createDiv({ cls: 'bookshelf-book-info' })
+
+        for (const propId of options.visibleProperties) {
+            // Skip the cover property - it's already shown as the image
+            if (propId === options.coverProperty) continue
+
+            const value = entry.getValue(propId)
+            // Handle null values as empty string
+            const valueStr = !value || value instanceof NullValue ? '' : value.toString()
+
+            const displayName = this.config.getDisplayName(propId)
+
+            // Always render property element to maintain consistent block height
+            const propEl = infoEl.createDiv({
+                cls: 'bookshelf-book-property',
+                title: valueStr ? `${displayName}: ${valueStr}` : displayName
+            })
+
+            if (valueStr) {
+                // Render property with clickable wikilinks
+                this.renderPropertyValue(propEl, valueStr)
+            } else {
+                // Use non-breaking space to preserve line height for empty values
+                propEl.textContent = '\u00A0'
+            }
+        }
+    }
+
+    /**
+     * Render a property value with clickable wikilinks
+     */
+    private renderPropertyValue(container: HTMLElement, value: string): void {
+        // Regex to match wikilinks: [[link]] or [[link|display]]
+        const wikiLinkRegex = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g
+
+        let lastIndex = 0
+        let match: RegExpExecArray | null
+
+        while ((match = wikiLinkRegex.exec(value)) !== null) {
+            // Add text before the link
+            if (match.index > lastIndex) {
+                container.appendText(value.slice(lastIndex, match.index))
+            }
+
+            // Create clickable link
+            const linkPath = match[1] ?? ''
+            const displayText = match[2] ?? linkPath
+
+            const linkEl = container.createEl('a', {
+                cls: 'bookshelf-link',
+                text: displayText,
+                href: linkPath
+            })
+
+            // Handle click
+            linkEl.addEventListener('click', (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                void this.openLink(linkPath, e.ctrlKey || e.metaKey)
+            })
+
+            lastIndex = match.index + match[0].length
+        }
+
+        // Add remaining text after last link
+        if (lastIndex < value.length) {
+            container.appendText(value.slice(lastIndex))
+        }
+
+        // If no links were found, just set the text
+        if (lastIndex === 0) {
+            container.setText(value)
+        }
+    }
+
+    /**
+     * Open an internal link
+     */
+    private async openLink(linkPath: string, newTab: boolean): Promise<void> {
+        const file = this.app.metadataCache.getFirstLinkpathDest(linkPath, '')
+        if (file) {
+            if (newTab) {
+                await this.app.workspace.getLeaf('tab').openFile(file)
+            } else {
+                await this.app.workspace.getLeaf().openFile(file)
+            }
+        }
+    }
+
+    /**
+     * Resolve cover value to a usable URL
+     * Handles both external URLs and vault-relative paths
+     */
+    private resolveCoverUrl(cover: string): string {
+        if (!cover) return ''
+
+        // Check if it's already a URL (http, https, data:)
+        if (/^(https?:\/\/|data:)/i.test(cover)) {
+            return cover
+        }
+
+        // Treat as vault-relative path - use Obsidian's resource path
+        // Remove leading slash if present for consistency
+        const normalizedPath = cover.startsWith('/') ? cover.slice(1) : cover
+        return this.app.vault.adapter.getResourcePath(normalizedPath)
     }
 
     /**
@@ -346,21 +337,17 @@ export class BookshelfView extends BasesView {
     }
 
     /**
-     * Render star rating
-     */
-    private renderStars(rating: number): string {
-        const fullStars = Math.floor(rating)
-        const halfStar = rating % 1 >= 0.5
-        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0)
-
-        return '★'.repeat(fullStars) + (halfStar ? '½' : '') + '☆'.repeat(emptyStars)
-    }
-
-    /**
      * Open a file when user clicks on a book
      */
     private async openFile(entry: BasesEntry): Promise<void> {
         await this.app.workspace.getLeaf().openFile(entry.file)
+    }
+
+    /**
+     * Open a file in a new tab
+     */
+    private async openFileInNewTab(entry: BasesEntry): Promise<void> {
+        await this.app.workspace.getLeaf('tab').openFile(entry.file)
     }
 
     /**

@@ -55,10 +55,11 @@ declare module 'obsidian' {
 
     /**
      * A group of entries when using groupBy
+     * Note: Actual API uses 'entries' and 'key' properties
      */
     interface BasesEntryGroup {
-        value: Value | null
-        data: BasesEntry[]
+        key: Value | null
+        entries: BasesEntry[]
     }
 
     /**

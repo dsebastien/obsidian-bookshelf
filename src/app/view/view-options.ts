@@ -9,80 +9,76 @@ export function getBookshelfViewOptions(): ViewOption[] {
         // Layout options
         {
             type: 'slider',
-            key: 'shelfHeight',
-            displayName: 'Shelf height',
-            min: 120,
-            max: 300,
-            step: 20,
-            default: 180
+            key: 'cardSize',
+            displayName: 'Card size',
+            min: 50,
+            max: 800,
+            step: 10,
+            default: 150
         },
         {
             type: 'slider',
-            key: 'bookWidth',
-            displayName: 'Book width',
-            min: 60,
-            max: 150,
-            step: 10,
-            default: 100
-        },
-        {
-            type: 'toggle',
-            key: 'showTitles',
-            displayName: 'Show titles',
-            default: true
-        },
-        {
-            type: 'toggle',
-            key: 'showAuthors',
-            displayName: 'Show authors',
-            default: false
-        },
-        {
-            type: 'toggle',
-            key: 'showRatings',
-            displayName: 'Show ratings',
-            default: true
+            key: 'bookGap',
+            displayName: 'Gap between books',
+            min: 20,
+            max: 60,
+            step: 4,
+            default: 20
         },
 
-        // Grouping options
+        // Shelf texture
+        {
+            type: 'dropdown',
+            key: 'shelfTexture',
+            displayName: 'Shelf material',
+            default: 'oak',
+            options: {
+                // Woods
+                'oak': 'Oak',
+                'walnut': 'Walnut',
+                'cherry': 'Cherry',
+                'mahogany': 'Mahogany',
+                'pine': 'Pine',
+                'ebony': 'Ebony',
+                // Other materials
+                'metal': 'Brushed Metal',
+                'dark-metal': 'Dark Metal',
+                'white-marble': 'White Marble',
+                'black-marble': 'Black Marble',
+                'concrete': 'Concrete',
+                'slate': 'Slate'
+            }
+        },
+
+        // Cover options
         {
             type: 'group',
-            displayName: 'Grouping',
+            displayName: 'Cover',
             items: [
                 {
-                    type: 'toggle',
-                    key: 'groupByStatus',
-                    displayName: 'Group by reading status',
-                    default: true
+                    type: 'property',
+                    key: 'coverProperty',
+                    displayName: 'Image property',
+                    placeholder: 'Select property for cover image'
                 },
                 {
-                    type: 'toggle',
-                    key: 'showEmptyGroups',
-                    displayName: 'Show empty groups',
-                    default: false
-                }
-            ]
-        },
-
-        // Visual options
-        {
-            type: 'group',
-            displayName: 'Visual',
-            items: [
-                {
-                    type: 'toggle',
-                    key: 'showShelfWood',
-                    displayName: 'Show shelf texture',
-                    default: true
+                    type: 'dropdown',
+                    key: 'imageFit',
+                    displayName: 'Image fit',
+                    default: 'contain',
+                    options: {
+                        contain: 'Contain',
+                        cover: 'Cover'
+                    }
                 },
                 {
                     type: 'slider',
-                    key: 'bookGap',
-                    displayName: 'Gap between books',
-                    min: 0,
-                    max: 20,
-                    step: 2,
-                    default: 8
+                    key: 'aspectRatio',
+                    displayName: 'Aspect ratio',
+                    min: 0.25,
+                    max: 2.5,
+                    step: 0.25,
+                    default: 1
                 }
             ]
         }

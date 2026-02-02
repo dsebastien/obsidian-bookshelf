@@ -1,178 +1,437 @@
-@import 'tailwindcss';
+/* Tailwind CSS Configuration for Obsidian Plugin
+   - No preflight: prevents resetting Obsidian's base styles and other plugins
+   - Theme reference: provides values for utilities without adding CSS variables to :root
+   - Uses CSS layers to isolate styles from other plugins */
 
-/* ========================================
-   SUPPORT & UI SECTIONS
-   ======================================== */
+/* Define layer order for cascade isolation */
+@layer bs-base, bs-components, bs-utilities;
 
-/* Support section */
-.support-header-margin {
-    @apply mb-5;
-}
+@import 'tailwindcss/theme' layer(theme) theme(reference);
+@import 'tailwindcss/utilities' layer(bs-utilities);
 
-/* ========================================
-   BOOKSHELF VIEW
-   ======================================== */
+/* All custom plugin styles go in bs-components layer for proper cascade isolation */
+@layer bs-components {
+    /* ========================================
+       SUPPORT & UI SECTIONS
+       ======================================== */
 
-/* Container */
-.bookshelf-container {
-    @apply flex flex-col gap-6 p-4;
-    --bookshelf-height: 180px;
-    --book-width: 100px;
-    --book-gap: 8px;
-}
+    /* Support section */
+    .support-header-margin {
+        @apply mb-5;
+    }
 
-/* Empty state */
-.bookshelf-empty {
-    @apply flex flex-col items-center justify-center py-16 gap-4;
-}
+    /* ========================================
+       BOOKSHELF VIEW
+       ======================================== */
 
-.bookshelf-empty-icon {
-    @apply text-6xl;
-}
+    /* Container */
+    .bookshelf-container {
+        @apply flex flex-col gap-10 p-6;
+        --book-width: 150px;
+        --book-height: 150px;
+        --book-gap: 20px;
+        --row-gap: 48px;
+        --image-fit: contain;
+    }
 
-.bookshelf-empty-text {
-    @apply text-lg font-medium;
-    color: var(--text-normal);
-}
+    /* Empty state */
+    .bookshelf-empty {
+        @apply flex flex-col items-center justify-center py-20 gap-5;
+    }
 
-.bookshelf-empty-hint {
-    @apply text-sm;
-    color: var(--text-muted);
-}
+    .bookshelf-empty-icon {
+        @apply text-7xl opacity-60;
+        filter: grayscale(30%);
+    }
 
-/* Shelf section */
-.bookshelf-section {
-    @apply flex flex-col gap-2;
-}
+    .bookshelf-empty-text {
+        @apply text-xl font-medium;
+        color: var(--text-normal);
+    }
 
-/* Shelf header */
-.bookshelf-header {
-    @apply flex items-center justify-between px-2;
-}
+    .bookshelf-empty-hint {
+        @apply text-sm max-w-md text-center;
+        color: var(--text-muted);
+    }
 
-.bookshelf-header-label {
-    @apply text-base font-semibold;
-    color: var(--text-normal);
-}
+    /* Shelf section */
+    .bookshelf-section {
+        @apply flex flex-col gap-4;
+    }
 
-.bookshelf-header-count {
-    @apply text-sm;
-    color: var(--text-muted);
-}
+    /* Shelf header */
+    .bookshelf-header {
+        @apply flex items-center justify-between px-3;
+    }
 
-/* Shelf (the actual shelf with books) */
-.bookshelf-shelf {
-    @apply relative rounded-lg p-4 pb-6;
-    min-height: calc(var(--bookshelf-height) + 40px);
-    background-color: var(--background-secondary);
-    border: 1px solid var(--background-modifier-border);
-}
+    .bookshelf-header-label {
+        @apply text-base font-semibold tracking-wide;
+        color: var(--text-normal);
+    }
 
-/* Wood texture effect */
-.bookshelf-shelf--wood {
-    background: linear-gradient(
-        180deg,
-        var(--background-secondary) 0%,
-        var(--background-secondary-alt, var(--background-secondary)) 85%,
-        var(--background-modifier-border) 85%,
-        var(--background-modifier-border) 100%
-    );
-}
+    .bookshelf-header-count {
+        @apply text-sm px-2.5 py-0.5 rounded-full;
+        color: var(--text-muted);
+        background-color: var(--background-secondary);
+    }
 
-.bookshelf-shelf--wood::after {
-    @apply absolute bottom-0 left-0 right-0 h-3 rounded-b-lg;
-    content: '';
-    background: linear-gradient(
-        180deg,
-        var(--background-modifier-border) 0%,
-        var(--background-primary-alt, var(--background-secondary)) 100%
-    );
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-}
+    /* Shelf (the actual shelf with books) */
+    .bookshelf-shelf {
+        @apply relative rounded-xl p-6 pb-12;
+        min-height: calc(var(--book-height) + 100px);
+        border: 1px solid rgba(0, 0, 0, 0.15);
+    }
 
-/* Books row */
-.bookshelf-books {
-    @apply flex flex-wrap items-end;
-    gap: var(--book-gap);
-    min-height: var(--bookshelf-height);
-}
+    /* Shelf bottom ledge line */
+    .bookshelf-shelf::before {
+        @apply absolute left-4 right-4 h-px;
+        content: '';
+        bottom: 48px;
+        background-color: rgba(0, 0, 0, 0.15);
+    }
 
-/* Empty shelf message */
-.bookshelf-shelf-empty {
-    @apply flex items-center justify-center w-full italic;
-    height: var(--bookshelf-height);
-    color: var(--text-faint);
-}
+    /* Shelf front ledge */
+    .bookshelf-shelf::after {
+        @apply absolute bottom-0 left-0 right-0 rounded-b-xl;
+        content: '';
+        height: 32px;
+    }
 
-/* Individual book */
-.bookshelf-book {
-    @apply flex flex-col cursor-pointer transition-transform duration-150;
-    width: var(--book-width);
-}
+    /* ========================================
+       WOOD MATERIALS
+       ======================================== */
 
-.bookshelf-book:hover {
-    @apply -translate-y-2;
-}
+    /* Oak - warm honey brown */
+    [data-shelf-texture='oak'] .bookshelf-shelf {
+        background-color: #c19a6b;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.15),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+            0 4px 12px rgba(0, 0, 0, 0.2);
+    }
 
-.bookshelf-book:active {
-    @apply -translate-y-1;
-}
+    [data-shelf-texture='oak'] .bookshelf-shelf::after {
+        background-color: #a67c52;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
 
-/* Book cover */
-.bookshelf-book-cover {
-    @apply relative rounded-sm overflow-hidden;
-    width: var(--book-width);
-    height: var(--bookshelf-height);
-    box-shadow:
-        2px 2px 6px rgba(0, 0, 0, 0.2),
-        inset -2px 0 4px rgba(0, 0, 0, 0.1);
-}
+    /* Walnut - rich dark brown */
+    [data-shelf-texture='walnut'] .bookshelf-shelf {
+        background-color: #5d4037;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.08),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+            0 4px 12px rgba(0, 0, 0, 0.25);
+    }
 
-/* Cover with image */
-.bookshelf-book-cover--image {
-    @apply bg-cover bg-center;
-}
+    [data-shelf-texture='walnut'] .bookshelf-shelf::after {
+        background-color: #4a322a;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
 
-/* Spine without image */
-.bookshelf-book-cover--spine {
-    @apply flex items-center justify-center;
-    background: linear-gradient(
-        90deg,
-        rgba(0, 0, 0, 0.15) 0%,
-        transparent 10%,
-        transparent 90%,
-        rgba(0, 0, 0, 0.1) 100%
-    );
-}
+    /* Cherry - warm reddish tone */
+    [data-shelf-texture='cherry'] .bookshelf-shelf {
+        background-color: #9e4a3a;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.1),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.12),
+            0 4px 12px rgba(0, 0, 0, 0.22);
+    }
 
-/* Spine title (vertical) */
-.bookshelf-spine-title {
-    @apply text-xs font-medium px-1 text-center;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    transform: rotate(180deg);
-    color: rgba(255, 255, 255, 0.9);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    max-height: calc(var(--bookshelf-height) - 20px);
-    overflow: hidden;
-}
+    [data-shelf-texture='cherry'] .bookshelf-shelf::after {
+        background-color: #7d3a2d;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
 
-/* Book info below cover */
-.bookshelf-book-info {
-    @apply flex flex-col gap-0.5 pt-1.5 px-0.5;
-}
+    /* Mahogany - deep reddish-brown */
+    [data-shelf-texture='mahogany'] .bookshelf-shelf {
+        background-color: #6b3a2e;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.08),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+            0 4px 12px rgba(0, 0, 0, 0.25);
+    }
 
-.bookshelf-book-title {
-    @apply text-xs font-medium leading-tight truncate;
-    color: var(--text-normal);
-}
+    [data-shelf-texture='mahogany'] .bookshelf-shelf::after {
+        background-color: #522c23;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
 
-.bookshelf-book-author {
-    @apply text-xs truncate;
-    color: var(--text-muted);
-}
+    /* Pine - light natural wood */
+    [data-shelf-texture='pine'] .bookshelf-shelf {
+        background-color: #d4b896;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.2),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.08),
+            0 4px 12px rgba(0, 0, 0, 0.18);
+    }
 
-.bookshelf-book-rating {
-    @apply text-xs;
-    color: var(--text-accent);
+    [data-shelf-texture='pine'] .bookshelf-shelf::after {
+        background-color: #b89b78;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    /* Ebony - near black */
+    [data-shelf-texture='ebony'] .bookshelf-shelf {
+        background-color: #1a1816;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.05),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+            0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    [data-shelf-texture='ebony'] .bookshelf-shelf::after {
+        background-color: #0d0c0b;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    /* ========================================
+       METAL MATERIALS
+       ======================================== */
+
+    /* Brushed Metal - silver aluminum */
+    [data-shelf-texture='metal'] .bookshelf-shelf {
+        background-color: #b5b5b5;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.35),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.12),
+            0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    [data-shelf-texture='metal'] .bookshelf-shelf::after {
+        background-color: #9a9a9a;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    /* Dark Metal - industrial steel */
+    [data-shelf-texture='dark-metal'] .bookshelf-shelf {
+        background-color: #454545;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.12),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.18),
+            0 4px 12px rgba(0, 0, 0, 0.28);
+    }
+
+    [data-shelf-texture='dark-metal'] .bookshelf-shelf::after {
+        background-color: #353535;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.32),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    /* ========================================
+       STONE MATERIALS
+       ======================================== */
+
+    /* White Marble */
+    [data-shelf-texture='white-marble'] .bookshelf-shelf {
+        background-color: #f0ede8;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.5),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.05),
+            0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    [data-shelf-texture='white-marble'] .bookshelf-shelf::after {
+        background-color: #e0ddd8;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    /* Black Marble */
+    [data-shelf-texture='black-marble'] .bookshelf-shelf {
+        background-color: #1c1c1c;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.06),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+            0 4px 12px rgba(0, 0, 0, 0.32);
+    }
+
+    [data-shelf-texture='black-marble'] .bookshelf-shelf::after {
+        background-color: #0f0f0f;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.38),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    /* Concrete - industrial gray */
+    [data-shelf-texture='concrete'] .bookshelf-shelf {
+        background-color: #7a7a7a;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.1),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+            0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    [data-shelf-texture='concrete'] .bookshelf-shelf::after {
+        background-color: #626262;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    /* Slate - dark charcoal */
+    [data-shelf-texture='slate'] .bookshelf-shelf {
+        background-color: #3a3a3a;
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.08),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+            0 4px 12px rgba(0, 0, 0, 0.28);
+    }
+
+    [data-shelf-texture='slate'] .bookshelf-shelf::after {
+        background-color: #2a2a2a;
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.32),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    /* Books row */
+    .bookshelf-books {
+        @apply flex flex-wrap justify-center items-end relative;
+        column-gap: var(--book-gap);
+        row-gap: var(--row-gap);
+        min-height: var(--book-height);
+        padding-bottom: 12px;
+    }
+
+    /* Empty shelf message */
+    .bookshelf-shelf-empty {
+        @apply flex items-center justify-center w-full italic;
+        height: var(--book-height);
+        color: var(--text-faint);
+    }
+
+    /* ========================================
+       BOOK CARDS - Hardcover Effect
+       ======================================== */
+
+    /* Book wrapper */
+    .bookshelf-book {
+        @apply flex flex-col;
+        width: var(--book-width);
+        overflow: visible;
+    }
+
+    /* Book cover - hardcover effect */
+    .bookshelf-book-cover {
+        @apply relative overflow-visible cursor-pointer;
+        width: var(--book-width);
+        height: var(--book-height);
+        border-radius: 2px 6px 6px 2px;
+        transition:
+            transform 0.15s ease-out,
+            box-shadow 0.15s ease-out;
+        box-shadow:
+            inset 1px 1px 0 1px rgba(255, 255, 255, 0.2),
+            inset 0 0 0 1px rgba(0, 0, 0, 0.1),
+            -4px 2px 4px 0 rgba(0, 0, 0, 0.3),
+            -8px 8px 20px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    /* Spine gradient effect */
+    .bookshelf-book-cover::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background-image: linear-gradient(
+            to right,
+            rgba(0, 0, 0, 0.2),
+            rgba(255, 255, 255, 0.3) 1%,
+            transparent 6%,
+            rgba(0, 0, 0, 0.15) 8%,
+            rgba(255, 255, 255, 0.2) 9%,
+            transparent 20%
+        );
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* Hover effect on cover */
+    .bookshelf-book-cover:hover {
+        transform: translateY(-6px) scale(1.03);
+        box-shadow:
+            inset 1px 1px 0 1px rgba(255, 255, 255, 0.2),
+            inset 0 0 0 1px rgba(0, 0, 0, 0.1),
+            -4px 4px 8px 0 rgba(0, 0, 0, 0.3),
+            -12px 16px 30px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    /* Cover with image */
+    .bookshelf-book-cover--image {
+        background-size: var(--image-fit);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: var(--background-secondary);
+    }
+
+    /* Spine without image - colored background */
+    .bookshelf-book-cover--spine {
+        @apply flex items-center justify-center;
+    }
+
+    /* Spine title (vertical) */
+    .bookshelf-spine-title {
+        @apply font-semibold px-4 text-center leading-tight;
+        font-size: 1rem;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        transform: rotate(180deg);
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow:
+            1px 1px 3px rgba(0, 0, 0, 0.7),
+            0 0 10px rgba(0, 0, 0, 0.4);
+        max-height: calc(var(--book-height) - 30px);
+        overflow: hidden;
+        letter-spacing: 0.5px;
+        z-index: 2;
+    }
+
+    /* Book info below cover */
+    .bookshelf-book-info {
+        @apply flex flex-col gap-1 pt-3 px-1;
+    }
+
+    .bookshelf-book-property {
+        @apply text-sm truncate;
+        color: var(--text-normal);
+        min-height: 1.2em;
+    }
+
+    .bookshelf-book-property:first-child {
+        @apply font-medium;
+    }
+
+    .bookshelf-book-property:not(:first-child) {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+    }
+
+    /* Wikilinks in properties */
+    .bookshelf-link {
+        color: var(--link-color);
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .bookshelf-link:hover {
+        color: var(--link-color-hover);
+        text-decoration: underline;
+    }
 }
