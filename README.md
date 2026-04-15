@@ -1,42 +1,74 @@
-# Obsidian Plugin Template (Bun)
+# Bookshelf for Obsidian
 
-A modern Obsidian plugin template using **Bun** as the package manager and bundler, with TypeScript, Tailwind CSS v4, ESLint, Prettier, and automated release workflows.
+A community plugin that adds a **Bookshelf** view type to [Obsidian Bases](https://help.obsidian.md/bases), letting you display notes as a visual bookshelf — with real book covers on realistic shelves.
+
+> Perfect for tracking books, movies, games, courses, papers, or any collection of notes where a visual, cover-driven layout beats a table or card grid.
 
 ## Features
 
-- **Bun** for fast package management and bundling
-- **TypeScript** with strict configuration
-- **Tailwind CSS v4** for styling
-- **ESLint + Prettier** for code quality
-- **Husky + lint-staged** for pre-commit hooks
-- **Commitizen + Conventional Commits** for standardized commit messages
-- **GitHub Actions** for CI/CD and automated releases
-- **Immer** for immutable state management
-- **Zod** for runtime validation
+- **Bookshelf view for Bases** — register a new view type alongside Table, Cards, and Gallery.
+- **Cover-driven layout** — pick any property containing an image URL or vault path. Supports external URLs, `data:` URIs, and vault-relative paths.
+- **Automatic spines** — notes without a cover get a colored spine with a vertical title, generated deterministically from the title so each book keeps its identity.
+- **Shelf textures** — choose from oak, walnut, cherry, mahogany, pine, ebony, brushed metal, dark metal, white marble, black marble, concrete, and slate.
+- **Grouping** — respects the Base's `groupBy` configuration. Each group becomes its own shelf with a header and count.
+- **Property display** — any property added to the Base's display order appears under each book. Rating properties are highlighted.
+- **Wikilink rendering** — `[[links]]` inside displayed properties are clickable and routed through Obsidian's standard link handling.
+- **Interactions** — click a cover to open the note, Ctrl/Cmd+click to open in a new tab, right-click for a context menu (open, open in new tab, reveal in navigation).
+- **Adjustable layout** — tune card size, gap between books, and aspect ratio directly from the view's options.
+- **Desktop & mobile** — no desktop-only APIs.
 
-## Getting Started
+## Requirements
 
-See [TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md) for detailed instructions on how to use this template to create your own Obsidian plugin.
+- Obsidian **1.4.0** or newer.
+- The **Bases** feature enabled (core plugin).
 
-## Quick Start
+## Installation
 
-1. Click "Use this template" on GitHub to create a new repository
-2. Clone your new repository
-3. Follow the setup instructions in [TEMPLATE_USAGE.md](./TEMPLATE_USAGE.md)
-4. Run `bun install` to install dependencies
-5. Run `bun run dev` to start development
+### Community plugins (recommended once listed)
+
+1. Open **Settings → Community plugins**.
+2. Search for **Bookshelf**.
+3. Install and enable.
+
+### Manual
+
+1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/dsebastien/obsidian-bookshelf/releases).
+2. Copy them into `<Vault>/.obsidian/plugins/obsidian-bookshelf/`.
+3. Reload Obsidian and enable **Bookshelf** in **Settings → Community plugins**.
+
+## Quick start
+
+1. Create or open a Base (`.base` file).
+2. Add a view and select **Bookshelf** as its type.
+3. In the view's options, set **Image property** to the frontmatter property holding your cover images (e.g. `cover`).
+4. Add any properties you want to show under each book to the view's display order.
+5. Optionally set `groupBy` on the Base to split books across multiple shelves.
+
+A minimal note that works out of the box:
+
+```yaml
+---
+title: The Pragmatic Programmer
+author: '[[David Thomas]]'
+cover: https://example.com/pragmatic.jpg
+rating: 5
+---
+```
+
+## Documentation
+
+Full documentation lives in [`docs/`](./docs/) and is published at <https://dsebastien.github.io/obsidian-bookshelf>.
+
+- [Usage](./docs/usage.md)
+- [Configuration](./docs/configuration.md)
+- [Tips & best practices](./docs/tips.md)
+- [Release notes](./docs/release-notes.md)
 
 ## Development
 
-See [DEVELOPMENT.md](./DEVELOPMENT.md) for detailed development instructions.
+See [DEVELOPMENT.md](./DEVELOPMENT.md) and [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-### Prerequisites
-
-- [Bun](https://bun.sh/) (latest version)
-- [Git](https://git-scm.com/)
-- An Obsidian vault for testing
-
-### Commands
+Quick commands:
 
 | Command             | Description                       |
 | ------------------- | --------------------------------- |
@@ -48,16 +80,10 @@ See [DEVELOPMENT.md](./DEVELOPMENT.md) for detailed development instructions.
 | `bun run format`    | Format with Prettier              |
 | `bun test`          | Run tests                         |
 
-## Contributing
+## Support
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines.
+If this plugin is useful to you, consider [buying me a coffee](https://www.buymeacoffee.com/dsebastien) ❤️. You can also follow my work on [dsebastien.net](https://dsebastien.net) and [X](https://x.com/dSebastien).
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE) for details.
-
-## News & Support
-
-<!-- TODO: Update these links with your own -->
-
-To stay up to date about this plugin, Obsidian in general, Personal Knowledge Management and note-taking, subscribe to [my newsletter](https://your-newsletter-url.com). Note that the best way to support my work is to become a paid subscriber ❤️.
+[MIT](./LICENSE) © Sébastien Dubois
