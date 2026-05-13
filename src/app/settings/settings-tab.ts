@@ -1,5 +1,6 @@
 import { App, PluginSettingTab, Setting } from 'obsidian'
 import type BookshelfPlugin from '../../main'
+import { BUY_ME_A_COFFEE_BADGE_DATA_URL } from '../assets/buy-me-a-coffee'
 
 // TODO: Rename this class to match your plugin name (e.g., MyAwesomePluginSettingTab)
 export class BookshelfPluginSettingTab extends PluginSettingTab {
@@ -53,8 +54,7 @@ export class BookshelfPluginSettingTab extends PluginSettingTab {
             href: 'https://www.buymeacoffee.com/dsebastien'
         })
         const imgEl = linkEl.createEl('img')
-        imgEl.src =
-            'https://github.com/dsebastien/obsidian-plugin-template/blob/main/src/assets/buy-me-a-coffee.png?raw=true'
+        imgEl.src = BUY_ME_A_COFFEE_BADGE_DATA_URL
         imgEl.alt = 'Buy me a coffee'
         imgEl.width = width
     }
