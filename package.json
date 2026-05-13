@@ -1,6 +1,6 @@
 {
     "name": "obsidian-bookshelf",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "A Bookshelf view type for Obsidian Bases - display your notes as a visual bookshelf",
     "author": {
         "name": "Sébastien Dubois",
