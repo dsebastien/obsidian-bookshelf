@@ -33,7 +33,7 @@ A community plugin that adds a **Bookshelf** view type to [Obsidian Bases](https
 ### Manual
 
 1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/dsebastien/obsidian-bookshelf/releases).
-2. Copy them into `<Vault>/.obsidian/plugins/obsidian-bookshelf/`.
+2. Copy them into `<Vault>/.obsidian/plugins/bookshelf-base/`.
 3. Reload Obsidian and enable **Bookshelf** in **Settings → Community plugins**.
 
 ## Quick start

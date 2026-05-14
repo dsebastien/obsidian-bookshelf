@@ -68,4 +68,4 @@ Only wikilink syntax is detected: `[[Target]]` or `[[Target|Display]]`. Markdown
 
 ### The plugin folder name matters
 
-For a manual install, the folder must be `obsidian-bookshelf` (matching the plugin `id` in `manifest.json`). Renaming it will prevent Obsidian from loading the plugin.
+For a manual install, the folder must be `bookshelf-base` (matching the plugin `id` in `manifest.json`). Renaming it will prevent Obsidian from loading the plugin.

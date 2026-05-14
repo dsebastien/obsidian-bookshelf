@@ -1,7 +1,7 @@
 {
-    "name": "obsidian-bookshelf",
+    "name": "bookshelf-base",
     "version": "0.2.0",
-    "description": "A Bookshelf view type for Obsidian Bases - display your notes as a visual bookshelf",
+    "description": "Display your notes as a visual bookshelf via a custom Bases view.",
     "author": {
         "name": "Sébastien Dubois",
         "email": "sebastien@dsebastien.net",
