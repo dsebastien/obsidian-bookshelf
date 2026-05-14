@@ -12,17 +12,31 @@ nav_order: 2
 
 ## Installation
 
-### From community plugins
+### Community plugins (recommended)
 
-1. Open **Settings → Community plugins**.
-2. Search for **Bookshelf**.
-3. Install and enable.
+1. In Obsidian, go to **Settings → Community plugins**.
+2. Disable **Restricted mode** if it's enabled.
+3. Select **Browse**, search for **Bookshelf**, install it, then enable it.
 
-### Manual install
+You can also browse the catalog on the [Obsidian Community](https://community.obsidian.md/) website.
+
+### Manual installation
+
+If the plugin isn't listed in the community catalog yet (or you want a specific version):
 
 1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/dsebastien/obsidian-bookshelf/releases).
 2. Copy them into `<Vault>/.obsidian/plugins/bookshelf-base/`.
 3. Reload Obsidian and enable **Bookshelf** in **Settings → Community plugins**.
+
+### BRAT (bleeding edge)
+
+[BRAT](https://github.com/TfTHacker/obsidian42-brat) (Beta Reviewers Auto-update Tool) installs plugins straight from a GitHub repo and keeps them updated automatically. Use this if you want the latest commits — **things might break**.
+
+1. Install **Obsidian42 - BRAT** from **Settings → Community plugins → Browse** and enable it.
+2. Run **BRAT: Add a beta plugin for testing** from the command palette.
+3. Paste `https://github.com/dsebastien/obsidian-bookshelf`.
+4. Select the latest version and confirm.
+5. Enable **Bookshelf** in **Settings → Community plugins**.
 
 ## Creating a bookshelf
 
