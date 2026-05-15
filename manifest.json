@@ -1,6 +1,6 @@
 {
     "id": "bookshelf-base",
-    "name": "Bookshelf",
+    "name": "Bookshelf Base",
     "description": "Display your notes as a visual bookshelf via a custom Bases view.",
     "version": "0.2.1",
     "minAppVersion": "1.4.0",
