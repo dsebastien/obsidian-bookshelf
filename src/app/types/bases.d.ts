@@ -203,4 +203,4 @@ declare module 'obsidian' {
         registerBasesView(viewType: string, registration: BasesViewRegistration): boolean
     }
 }
-/* eslint-enable @typescript-eslint/no-unused-vars */
+/* eslint-enable @typescript-eslint/no-unused-vars -- closes the module-augmentation suppression opened at the top of the file */
