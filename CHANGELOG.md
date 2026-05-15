@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.5](https://github.com/dsebastien/obsidian-bookshelf/compare/0.2.4...0.2.5) (2026-05-15)
+
 ## [0.2.4](https://github.com/dsebastien/obsidian-bookshelf/compare/0.2.3...0.2.4) (2026-05-15)
 
 ## [0.2.3](https://github.com/dsebastien/obsidian-bookshelf/compare/0.2.2...0.2.3) (2026-05-15)
@@ -34,6 +36,7 @@ All notable changes to this project will be documented in this file.
 * remove unused eslint-disable directives ([d857e67](https://github.com/dsebastien/obsidian-bookshelf/commit/d857e679748993424880bb09dd2e5e19496b235a))
 * resolve lint errors ([9c51e47](https://github.com/dsebastien/obsidian-bookshelf/commit/9c51e4741ef90c34c04166a52872bec220e68ac6))
 * resolve TypeScript errors ([78b248d](https://github.com/dsebastien/obsidian-bookshelf/commit/78b248d7fbc19782472c37906dd5fdcedb5ba2f3))
+
 
 
 
