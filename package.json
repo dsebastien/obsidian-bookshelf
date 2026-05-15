@@ -1,6 +1,6 @@
 {
     "name": "bookshelf-base",
-    "version": "0.2.3",
+    "version": "0.2.4",
     "description": "Display your notes as a visual bookshelf via a custom Bases view.",
     "author": {
         "name": "Sébastien Dubois",
