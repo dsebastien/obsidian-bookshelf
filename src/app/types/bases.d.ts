@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars -- module augmentation declares classes/interfaces consumed elsewhere; in this file they appear unused */
 /**
  * Type declarations for Obsidian Bases API
  * These types are not yet exported from the official obsidian package
@@ -203,3 +203,4 @@ declare module 'obsidian' {
         registerBasesView(viewType: string, registration: BasesViewRegistration): boolean
     }
 }
+/* eslint-enable @typescript-eslint/no-unused-vars */
