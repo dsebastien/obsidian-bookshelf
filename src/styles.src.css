@@ -511,7 +511,7 @@
     /* Rating property - displayed in yellow/gold.
        Doubled class (specificity 0,2,0) beats `.bookshelf-book-property:first-child`
        and ties `.bookshelf-book-property:not(:first-child)` which this rule wins via
-       source order, so no !important is needed. */
+       source order. */
     .bookshelf-book-property.bookshelf-book-property--rating {
         color: #f5c518;
         font-weight: 600;

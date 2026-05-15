@@ -1,4 +1,4 @@
-# Bookshelf for Obsidian
+# Bookshelf Base
 
 A community plugin that adds a **Bookshelf** view type to [Obsidian Bases](https://help.obsidian.md/bases), letting you display notes as a visual bookshelf — with real book covers on realistic shelves.
 
