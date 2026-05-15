@@ -353,8 +353,7 @@
     /* Books row - positioned so books sit on shelf */
     .bookshelf-books {
         @apply flex flex-wrap justify-center items-end relative;
-        column-gap: var(--book-gap);
-        row-gap: var(--row-gap);
+        gap: var(--row-gap) var(--book-gap);
         min-height: var(--book-height);
         padding-bottom: 8px;
         z-index: 5;
@@ -509,9 +508,12 @@
         font-size: 0.8rem;
     }
 
-    /* Rating property - displayed in yellow/gold */
+    /* Rating property - displayed in yellow/gold.
+       Doubled class (specificity 0,2,0) beats `.bookshelf-book-property:first-child`
+       and ties `.bookshelf-book-property:not(:first-child)` which this rule wins via
+       source order, so no !important is needed. */
     .bookshelf-book-property.bookshelf-book-property--rating {
-        color: #f5c518 !important;
+        color: #f5c518;
         font-weight: 600;
     }
 
