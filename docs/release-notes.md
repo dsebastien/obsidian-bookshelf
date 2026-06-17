@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.3.1 (2026-06-17)
+
+### Bug Fixes
+
+- **deps:** force @conventional-changelog/git-client to ^2.7.0
+
 ## 0.3.0 (2026-06-17)
 
 ### Features
