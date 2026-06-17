@@ -32,10 +32,10 @@ Available textures:
 
 ### Decorations
 
-| Setting           | Type   | Default | Description                                                                                          |
-| ----------------- | ------ | ------- | ---------------------------------------------------------------------------------------------------- |
-| Shelf decorations | Toggle | `On`    | When off, the shelf is drawn as a flat surface with no wood/stone texture, ledge, or drop shadow.    |
-| Book shadows      | Toggle | `On`    | When off, books lose their grounding shadow and 3D hardcover shading for a flatter, minimal look.    |
+| Setting           | Type   | Default | Description                                                                                       |
+| ----------------- | ------ | ------- | ------------------------------------------------------------------------------------------------- |
+| Shelf decorations | Toggle | `On`    | When off, the shelf is drawn as a flat surface with no wood/stone texture, ledge, or drop shadow. |
+| Book shadows      | Toggle | `On`    | When off, books lose their grounding shadow and 3D hardcover shading for a flatter, minimal look. |
 
 Turn both off for a clean, decoration-free bookshelf.
 
