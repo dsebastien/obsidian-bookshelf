@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.3.0 (2026-06-17)
+
+### Features
+
+- **plugin:** add toggles to disable shelf decorations and book shadows
+
 ## 0.2.7 (2026-05-15)
 
 ## 0.2.6 (2026-05-15)

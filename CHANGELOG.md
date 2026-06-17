@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0](https://github.com/dsebastien/obsidian-bookshelf/compare/0.2.7...0.3.0) (2026-06-17)
+
+### Features
+
+* **plugin:** add toggles to disable shelf decorations and book shadows ([2039615](https://github.com/dsebastien/obsidian-bookshelf/commit/20396156489d44089beffc5012016cff939e6b72)), closes [#4](https://github.com/dsebastien/obsidian-bookshelf/issues/4)
+
 ## [0.2.7](https://github.com/dsebastien/obsidian-bookshelf/compare/0.2.6...0.2.7) (2026-05-15)
 
 ## [0.2.6](https://github.com/dsebastien/obsidian-bookshelf/compare/0.2.5...0.2.6) (2026-05-15)
@@ -40,6 +46,7 @@ All notable changes to this project will be documented in this file.
 * remove unused eslint-disable directives ([d857e67](https://github.com/dsebastien/obsidian-bookshelf/commit/d857e679748993424880bb09dd2e5e19496b235a))
 * resolve lint errors ([9c51e47](https://github.com/dsebastien/obsidian-bookshelf/commit/9c51e4741ef90c34c04166a52872bec220e68ac6))
 * resolve TypeScript errors ([78b248d](https://github.com/dsebastien/obsidian-bookshelf/commit/78b248d7fbc19782472c37906dd5fdcedb5ba2f3))
+
 
 
 
