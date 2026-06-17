@@ -350,6 +350,41 @@
             inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
+    /* ========================================
+       MINIMAL MODE - toggle off decorations
+       ======================================== */
+
+    /* Shelf decorations off: flat surface, no texture, ledge, or shelf shadows.
+       Same specificity (0,2,0) as the texture rules above, so these must stay
+       after them in source order to win. */
+    [data-shelf-decorations='off'] .bookshelf-shelf {
+        padding-bottom: 24px;
+        border-color: var(--background-modifier-border);
+        background-color: var(--background-secondary);
+        background-image: none;
+        box-shadow: none;
+    }
+
+    [data-shelf-decorations='off'] .bookshelf-shelf::before,
+    [data-shelf-decorations='off'] .bookshelf-shelf::after {
+        @apply hidden;
+    }
+
+    /* Book shadows off: drop the grounding shadow and 3D cover shadows,
+       keep a thin border so covers stay readable. */
+    [data-book-shadows='off'] .bookshelf-book::before {
+        @apply hidden;
+    }
+
+    [data-book-shadows='off'] .bookshelf-book-cover,
+    [data-book-shadows='off'] .bookshelf-book-cover:hover {
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-book-shadows='off'] .bookshelf-book-cover::after {
+        @apply hidden;
+    }
+
     /* Books row - positioned so books sit on shelf */
     .bookshelf-books {
         @apply flex flex-wrap justify-center items-end relative;

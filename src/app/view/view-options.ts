@@ -26,6 +26,20 @@ export function getBookshelfViewOptions(): ViewOption[] {
             default: 20
         },
 
+        // Decorations
+        {
+            type: 'toggle',
+            key: 'showShelf',
+            displayName: 'Shelf decorations',
+            default: true
+        },
+        {
+            type: 'toggle',
+            key: 'showShadows',
+            displayName: 'Book shadows',
+            default: true
+        },
+
         // Shelf texture
         {
             type: 'dropdown',

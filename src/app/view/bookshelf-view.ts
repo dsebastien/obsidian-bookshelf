@@ -34,6 +34,10 @@ export class BookshelfView extends BasesView {
         // Shelf settings
         const shelfTexture = (this.config.get('shelfTexture') as string) ?? 'oak'
 
+        // Decoration settings
+        const showShelf = (this.config.get('showShelf') as boolean) ?? true
+        const showShadows = (this.config.get('showShadows') as boolean) ?? true
+
         // Cover settings
         const coverProperty = this.config.getAsPropertyId('coverProperty')
         const imageFit = (this.config.get('imageFit') as string) ?? 'contain'
@@ -52,6 +56,8 @@ export class BookshelfView extends BasesView {
         this.containerEl.style.setProperty('--book-gap', `${bookGap}px`)
         this.containerEl.style.setProperty('--image-fit', imageFit)
         this.containerEl.dataset['shelfTexture'] = shelfTexture
+        this.containerEl.dataset['shelfDecorations'] = showShelf ? 'on' : 'off'
+        this.containerEl.dataset['bookShadows'] = showShadows ? 'on' : 'off'
 
         // Handle empty state
         if (entries.length === 0) {
