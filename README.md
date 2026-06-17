@@ -4,6 +4,8 @@ A community plugin that adds a **Bookshelf** view type to [Obsidian Bases](https
 
 > Perfect for tracking books, movies, games, courses, papers, or any collection of notes where a visual, cover-driven layout beats a table or card grid.
 
+![Bookshelf view showing book covers on a wooden shelf](docs/assets/bookshelf-screenshot.png)
+
 ## Features
 
 - **Bookshelf view for Bases** — register a new view type alongside Table, Cards, and Gallery.
