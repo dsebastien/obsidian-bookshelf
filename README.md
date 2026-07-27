@@ -18,6 +18,7 @@ A community plugin that adds a **Bookshelf** view type to [Obsidian Bases](https
 - **Interactions** — click a cover to open the note, Ctrl/Cmd+click to open in a new tab, right-click for a context menu (open, open in new tab, reveal in navigation).
 - **Adjustable layout** — tune card size, gap between books, and aspect ratio directly from the view's options.
 - **Desktop & mobile** — no desktop-only APIs.
+- **What's new after updates.** After a plugin update, a one-time dialog shows the release notes you just received (including skipped versions) with ways to support development. Never shown on fresh installs or regular restarts.
 
 ## Requirements
 
