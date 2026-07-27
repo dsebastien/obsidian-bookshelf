@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.4.0 (2026-07-27)
+
+### Features
+
+- **plugin:** show a what's new dialog once after plugin updates
+
 ## 0.3.2 (2026-07-17)
 
 ## 0.3.1 (2026-06-17)
