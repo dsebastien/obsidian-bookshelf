@@ -150,10 +150,10 @@ declare module 'obsidian' {
 
     interface ViewOptionGroup extends ViewOptionBase {
         type: 'group'
-        items: ViewOption[]
+        items: BasesAllOptions[]
     }
 
-    type ViewOption =
+    type BasesAllOptions =
         | ViewOptionSlider
         | ViewOptionDropdown
         | ViewOptionProperty
@@ -169,7 +169,7 @@ declare module 'obsidian' {
         name: string
         icon: string
         factory: (controller: QueryController, containerEl: HTMLElement) => BasesView
-        options?: () => ViewOption[]
+        options?: () => BasesAllOptions[]
     }
 
     /**

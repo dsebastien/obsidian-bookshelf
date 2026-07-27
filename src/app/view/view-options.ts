@@ -1,10 +1,10 @@
-import type { ViewOption } from 'obsidian'
+import type { BasesAllOptions } from 'obsidian'
 
 /**
  * Returns the view options for the Bookshelf view.
  * These appear in the view's settings panel.
  */
-export function getBookshelfViewOptions(): ViewOption[] {
+export function getBookshelfViewOptions(): BasesAllOptions[] {
     return [
         // Layout options
         {
