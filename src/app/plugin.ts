@@ -7,7 +7,7 @@ import { produce } from 'immer'
 import type { Draft } from 'immer'
 import { BookshelfView, BOOKSHELF_VIEW_TYPE } from './view/bookshelf-view'
 import { getBookshelfViewOptions } from './view/view-options'
-import { registerWhatsNewDialog } from './whats-new'
+import { registerWhatsNewView } from './whats-new'
 
 // TODO: Rename this class to match your plugin name (e.g., MyAwesomePlugin)
 export class BookshelfPlugin extends Plugin {
@@ -21,7 +21,7 @@ export class BookshelfPlugin extends Plugin {
      */
     override async onload() {
         // Must run before anything can call saveData (fresh-install detection)
-        registerWhatsNewDialog(this)
+        registerWhatsNewView(this)
         log('Initializing', 'debug')
         await this.loadSettings()
 
