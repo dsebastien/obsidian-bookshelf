@@ -1,6 +1,7 @@
 import { App, PluginSettingTab, Setting } from 'obsidian'
 import type BookshelfPlugin from '../../main'
 import { BUY_ME_A_COFFEE_BADGE_DATA_URL } from '../assets/buy-me-a-coffee'
+import { renderSupportSection } from '../ui/support-links'
 
 // TODO: Rename this class to match your plugin name (e.g., MyAwesomePluginSettingTab)
 export class BookshelfPluginSettingTab extends PluginSettingTab {
@@ -34,18 +35,9 @@ export class BookshelfPluginSettingTab extends PluginSettingTab {
 
     // TODO: Adapt this or remove
     renderSupportHeader(containerEl: HTMLElement) {
-        new Setting(containerEl).setName('Support').setHeading()
-
-        const supportDesc = new DocumentFragment()
-        supportDesc.createDiv({
-            text: 'Buy me a coffee to support the development of this plugin ❤️'
+        renderSupportSection(containerEl, (el) => {
+            this.renderBuyMeACoffeeBadge(el)
         })
-
-        new Setting(containerEl).setDesc(supportDesc)
-
-        this.renderBuyMeACoffeeBadge(containerEl)
-        const spacing = containerEl.createDiv()
-        spacing.classList.add('support-header-margin')
     }
 
     // TODO: Adapt this or remove
