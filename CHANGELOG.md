@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0](https://github.com/dsebastien/obsidian-bookshelf/compare/0.5.0...0.6.0) (2026-07-29)
+
+### Features
+
+* **plugin:** aggregate what's new dialogs across simultaneously updated plugins ([4009e7d](https://github.com/dsebastien/obsidian-bookshelf/commit/4009e7d08035d2cac2735a4aee940c17a3c3bf7f))
+
 ## [0.5.0](https://github.com/dsebastien/obsidian-bookshelf/compare/0.4.0...0.5.0) (2026-07-29)
 
 ### Features
@@ -66,6 +72,7 @@ All notable changes to this project will be documented in this file.
 * remove unused eslint-disable directives ([d857e67](https://github.com/dsebastien/obsidian-bookshelf/commit/d857e679748993424880bb09dd2e5e19496b235a))
 * resolve lint errors ([9c51e47](https://github.com/dsebastien/obsidian-bookshelf/commit/9c51e4741ef90c34c04166a52872bec220e68ac6))
 * resolve TypeScript errors ([78b248d](https://github.com/dsebastien/obsidian-bookshelf/commit/78b248d7fbc19782472c37906dd5fdcedb5ba2f3))
+
 
 
 
