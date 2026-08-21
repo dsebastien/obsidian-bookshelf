@@ -1,4 +1,4 @@
-import { Notice, PluginSettingTab } from 'obsidian'
+import { PluginSettingTab } from 'obsidian'
 import type { App, SettingDefinitionItem } from 'obsidian'
 import type BookshelfPlugin from '../../main'
 import { BUY_ME_A_COFFEE_BADGE_DATA_URL } from '../assets/buy-me-a-coffee'
@@ -38,13 +38,6 @@ export class BookshelfPluginSettingTab extends PluginSettingTab {
 
     override getSettingDefinitions(): SettingDefinitionItem[] {
         return [
-            // TODO: Replace this example control with your plugin's settings.
-            // `key` is the name handed to getControlValue/setControlValue.
-            {
-                name: 'Enabled',
-                desc: 'Turn the plugin features on or off.',
-                control: { type: 'toggle', key: 'enabled' }
-            },
             // TODO: Adapt this or remove
             {
                 name: 'Follow me on X',
@@ -77,38 +70,9 @@ export class BookshelfPluginSettingTab extends PluginSettingTab {
         ]
     }
 
-    /**
-     * Reads the value behind a control `key`. Returning undefined/null makes
-     * the framework fall back to the control's declared `defaultValue`.
-     */
-    override getControlValue(key: string): unknown {
-        switch (key) {
-            case 'enabled':
-                return this.plugin.settings.enabled
-            default:
-                return undefined
-        }
-    }
-
-    /**
-     * Persists a control edit. Rejecting (not resolving) on failure is what
-     * lets the framework roll the control back to the stored truth.
-     */
-    override async setControlValue(key: string, value: unknown): Promise<void> {
-        switch (key) {
-            case 'enabled':
-                if (typeof value !== 'boolean') {
-                    throw new Error(`Setting "${key}" expects a boolean.`)
-                }
-                await this.plugin.updateSettings((draft) => {
-                    draft.enabled = value
-                })
-                return
-            default:
-                new Notice('Failed to save settings.')
-                throw new Error(`Setting "${key}" does not address a known field.`)
-        }
-    }
+    // No control definitions -> no getControlValue/setControlValue bridge.
+    // When a real setting is added, reinstate both (see the template) and
+    // remember: setControlValue must REJECT on failure.
 
     // TODO: Adapt this or remove
     renderBuyMeACoffeeBadge(contentEl: HTMLElement | DocumentFragment, width = 175) {
