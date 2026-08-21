@@ -14,7 +14,7 @@ export class BookshelfPlugin extends Plugin {
     /**
      * The plugin settings are immutable
      */
-    settings: PluginSettings = produce(DEFAULT_SETTINGS, () => DEFAULT_SETTINGS)
+    override settings: PluginSettings = produce(DEFAULT_SETTINGS, () => DEFAULT_SETTINGS)
 
     /**
      * Executed as soon as the plugin loads
@@ -81,6 +81,18 @@ export class BookshelfPlugin extends Plugin {
         if (needToSaveSettings) {
             void this.saveSettings()
         }
+    }
+
+    /**
+     * Apply a mutation to the settings (via immer) and persist the result.
+     * Persist-then-commit: memory is swapped only after saveData() succeeds,
+     * so the declarative tab's rejection-based rollback reads the on-disk
+     * truth rather than an optimistic mutation that never landed.
+     */
+    async updateSettings(mutator: (draft: Draft<PluginSettings>) => void) {
+        const next = produce(this.settings, mutator)
+        await this.saveData(next)
+        this.settings = next
     }
 
     /**

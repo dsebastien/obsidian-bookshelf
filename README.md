@@ -95,7 +95,7 @@ Quick commands:
 | `bun run tsc:watch` | Type check in watch mode          |
 | `bun run lint`      | Run ESLint                        |
 | `bun run format`    | Format with Prettier              |
-| `bun test`          | Run tests                         |
+| `bun run test`      | Run tests                         |
 
 ## License
 
