@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0](https://github.com/dsebastien/obsidian-bookshelf/compare/0.6.0...1.0.0) (2026-08-28)
+
+### ⚠ BREAKING CHANGES
+
+* **plugin:** minAppVersion moves 1.10.0 -> 1.13.0.
+
+One commit instead of the fleet's usual two: the settings tab here was
+still the template's untouched scaffold (follow button + support
+section, zero real controls), so the port is a transplant of the
+template's current declarative tab rather than a plugin-specific
+rewrite, and it is inseparable from the typings bump it needs.
+
+Catalog reviewer: CHANGELOG.md and eslint.config.ts back in the archive
+(verified: archive builds, lints and tests green); sentence-case
+re-enabled with the fleet brands config; "Personal Knowledge Management"
+copy fix.
+
+Security: 47 vulnerabilities (1 critical — handlebars 4.7.8 JS
+injection in the release changelog toolchain) -> 0, via the template's
+overrides block (handlebars 4.7.9, js-yaml 4.3.1, brace-expansion
+2.1.4, fast-uri 3.1.5, lodash 4.18.1, no ajv pin) plus bun audit fix.
+
+Toolchain: Bun 1.4.0, CI audit gate, test --isolate via `bun run test`,
+@types pinned, tsconfig types [bun, node], bun-types in
+minimumReleaseAgeExcludes.
+
+Settings: template's declarative tab (control toggle example + action
+row + render support group), Plugin.updateSettings with
+persist-then-commit (template 3d4f911), `override` on Plugin.settings,
+guard spec, AGENTS.md trap list. obsidian typings 1.12.0 -> 1.13.1.
+
+### Features
+
+* **plugin:** show what's new in a tab instead of a modal dialog ([9d4af67](https://github.com/dsebastien/obsidian-bookshelf/commit/9d4af67030e96a67750c0476ace74af897bdc68a))
+* **plugin:** surface support CTAs everywhere users can see them ([28615d8](https://github.com/dsebastien/obsidian-bookshelf/commit/28615d870aaa28e2b4eda16ec736d08b0f45cdfc))
+* **plugin:** sync with template 2.8.0+ line, declarative settings ([26a6cbf](https://github.com/dsebastien/obsidian-bookshelf/commit/26a6cbfa2f88934f79fa8986aec60b0c433d4328))
+
+### Bug Fixes
+
+* **plugin:** bring back the follow button and stack the support block ([f2769bc](https://github.com/dsebastien/obsidian-bookshelf/commit/f2769bc8721f14bbeff98f05939c18242b3f927c))
+* **plugin:** drop the inert example toggle surfaced by the port ([dbc710e](https://github.com/dsebastien/obsidian-bookshelf/commit/dbc710ee90348c269debf2932668045d7ce4289f))
+* **plugin:** serialize settings writes — overlapping edits lost data ([e56ba91](https://github.com/dsebastien/obsidian-bookshelf/commit/e56ba916929f4e45fb4b23c73acaaee676e77d60))
+
 ## [0.6.0](https://github.com/dsebastien/obsidian-bookshelf/compare/0.5.0...0.6.0) (2026-07-29)
 
 ### Features
@@ -72,6 +115,7 @@ All notable changes to this project will be documented in this file.
 * remove unused eslint-disable directives ([d857e67](https://github.com/dsebastien/obsidian-bookshelf/commit/d857e679748993424880bb09dd2e5e19496b235a))
 * resolve lint errors ([9c51e47](https://github.com/dsebastien/obsidian-bookshelf/commit/9c51e4741ef90c34c04166a52872bec220e68ac6))
 * resolve TypeScript errors ([78b248d](https://github.com/dsebastien/obsidian-bookshelf/commit/78b248d7fbc19782472c37906dd5fdcedb5ba2f3))
+
 
 
 
