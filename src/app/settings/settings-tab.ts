@@ -43,8 +43,18 @@ export class BookshelfPluginSettingTab extends PluginSettingTab {
                 name: 'Follow me on X',
                 desc: 'Sébastien Dubois (@dSebastien)',
                 searchable: false,
-                action: () => {
-                    window.open('https://x.com/dSebastien')
+                // A CTA button, not a row `action:`. `action:` makes the WHOLE
+                // row clickable and draws no button at all, so this row lost
+                // the button it used to have in the declarative port.
+                render: (setting): void => {
+                    setting.addButton((button) => {
+                        button
+                            .setCta()
+                            .setButtonText('Follow me on X')
+                            .onClick(() => {
+                                window.open('https://x.com/dSebastien')
+                            })
+                    })
                 }
             },
             // TODO: Adapt this or remove
@@ -60,6 +70,11 @@ export class BookshelfPluginSettingTab extends PluginSettingTab {
                             // Render INSIDE the row (settingEl), never into
                             // group.listEl — see the class docs above.
                             setting.infoEl.remove() // the section draws its own headings
+                            // `.setting-item` is a flex ROW. The support block
+                            // is a stack of full-width rows, so without this it
+                            // would lay its heading, buttons and badge out side
+                            // by side.
+                            setting.settingEl.addClass('bookshelf-settings-embed')
                             renderSupportSection(setting.settingEl, (el) => {
                                 this.renderBuyMeACoffeeBadge(el)
                             })

@@ -565,6 +565,17 @@
     }
 }
 
+/* Declarative settings: rows that render a full-width section (the support
+   links block) instead of the standard name/control layout.
+
+   Deliberately OUTSIDE `@layer bs-components`: unlayered rules beat layered
+   ones whatever their specificity, and Obsidian's own
+   `.setting-item { display: flex }` is unlayered. Inside the layer this still
+   computed to `flex` in a live vault however many times the class was doubled. */
+.bookshelf-settings-embed {
+    display: block;
+}
+
 /* ========================================
    "WHAT'S NEW" TAB
    Opened once after a plugin update (see
