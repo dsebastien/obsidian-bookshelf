@@ -1,5 +1,22 @@
 # Release Notes
 
+## 1.1.0 (2026-09-23)
+
+### Features
+
+- **build:** fail the build on a lockfile the catalog review cannot parse
+- **build:** make the rule floor check that it is still wired in
+- **build:** refuse commits that loosen the rules instead of fixing the finding
+
+### Bug Fixes
+
+- **build:** drop the stale 2.0.1 key from versions.json
+- **build:** harden the release path from the template
+- **build:** name the last release before a floor raise in versions.json
+- **build:** rebuild versions.json from the published releases
+- **deps:** move the fast-uri override off the vulnerable line
+- **plugin:** drop the no-unused-vars suppression from the Bases types
+
 ## 1.0.0 (2026-08-28)
 
 ### ⚠ BREAKING CHANGES

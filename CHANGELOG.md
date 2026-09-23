@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0](https://github.com/dsebastien/obsidian-bookshelf/compare/1.0.0...1.1.0) (2026-09-23)
+
+### Features
+
+* **build:** fail the build on a lockfile the catalog review cannot parse ([f14e066](https://github.com/dsebastien/obsidian-bookshelf/commit/f14e0667f56701923d29ef05b6d443c869f271f1))
+* **build:** make the rule floor check that it is still wired in ([62b4eb6](https://github.com/dsebastien/obsidian-bookshelf/commit/62b4eb6204251ff9473f7824c7322a4585874ae9))
+* **build:** refuse commits that loosen the rules instead of fixing the finding ([7ca4d52](https://github.com/dsebastien/obsidian-bookshelf/commit/7ca4d5239dabd41231891d1f90841caeec80bcf4))
+
+### Bug Fixes
+
+* **build:** drop the stale 2.0.1 key from versions.json ([ab227c4](https://github.com/dsebastien/obsidian-bookshelf/commit/ab227c4e5bba01d4a5320084a0c1687da054148c))
+* **build:** harden the release path from the template ([6e2217f](https://github.com/dsebastien/obsidian-bookshelf/commit/6e2217fd482c0f3542abf2291567da5633903c71))
+* **build:** name the last release before a floor raise in versions.json ([ce1f2aa](https://github.com/dsebastien/obsidian-bookshelf/commit/ce1f2aa1d0f7f6ab2c88e9e1545fa5a010d8a97c))
+* **build:** rebuild versions.json from the published releases ([8faaac4](https://github.com/dsebastien/obsidian-bookshelf/commit/8faaac48955ea3a2172273a9ecd57ef555af61fc))
+* **deps:** move the fast-uri override off the vulnerable line ([e3fe0fb](https://github.com/dsebastien/obsidian-bookshelf/commit/e3fe0fb0aa36c18d0c86f487123235d557a5a15f))
+* **plugin:** drop the no-unused-vars suppression from the Bases types ([3457fcb](https://github.com/dsebastien/obsidian-bookshelf/commit/3457fcb6a9bad855ebbbca60d16adf16098b8715))
+
 ## [1.0.0](https://github.com/dsebastien/obsidian-bookshelf/compare/0.6.0...1.0.0) (2026-08-28)
 
 ### ⚠ BREAKING CHANGES
@@ -115,6 +132,7 @@ guard spec, AGENTS.md trap list. obsidian typings 1.12.0 -> 1.13.1.
 * remove unused eslint-disable directives ([d857e67](https://github.com/dsebastien/obsidian-bookshelf/commit/d857e679748993424880bb09dd2e5e19496b235a))
 * resolve lint errors ([9c51e47](https://github.com/dsebastien/obsidian-bookshelf/commit/9c51e4741ef90c34c04166a52872bec220e68ac6))
 * resolve TypeScript errors ([78b248d](https://github.com/dsebastien/obsidian-bookshelf/commit/78b248d7fbc19782472c37906dd5fdcedb5ba2f3))
+
 
 
 
