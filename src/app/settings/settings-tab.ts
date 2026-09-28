@@ -66,7 +66,7 @@ export class BookshelfPluginSettingTab extends PluginSettingTab {
                         name: 'Support',
                         // Not a setting — keep it out of the settings search.
                         searchable: false,
-                        render: (setting): void => {
+                        render: (setting): (() => void) => {
                             // Render INSIDE the row (settingEl), never into
                             // group.listEl — see the class docs above.
                             setting.infoEl.remove() // the section draws its own headings
@@ -75,9 +75,14 @@ export class BookshelfPluginSettingTab extends PluginSettingTab {
                             // would lay its heading, buttons and badge out side
                             // by side.
                             setting.settingEl.addClass('bookshelf-settings-embed')
-                            renderSupportSection(setting.settingEl, (el) => {
+                            // In a wrapper removed by the returned cleanup: update() re-runs
+                            // this hook on the SAME row and only resets its control area, so
+                            // content appended straight to settingEl would pile up.
+                            const blockEl = setting.settingEl.createDiv()
+                            renderSupportSection(blockEl, (el) => {
                                 this.renderBuyMeACoffeeBadge(el)
                             })
+                            return () => blockEl.remove()
                         }
                     }
                 ]
