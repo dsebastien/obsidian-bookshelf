@@ -41,11 +41,11 @@ Turn both off for a clean, decoration-free bookshelf.
 
 ### Cover
 
-| Setting        | Type     | Default   | Description                                                                                                              |
-| -------------- | -------- | --------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Image property | Property | _(none)_  | The property containing the cover image (URL, `data:` URI, or vault-relative path). Falls back to `note.cover` if unset. |
-| Image fit      | Dropdown | `Contain` | How cover images fit the book shape. `Contain` preserves aspect ratio; `Cover` crops to fill.                            |
-| Aspect ratio   | Slider   | `1`       | `cardSize ÷ aspectRatio` determines book height. Range: 0.25–2.5, step 0.25.                                             |
+| Setting        | Type     | Default   | Description                                                                                                                                                                                                                                                                   |
+| -------------- | -------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Image property | Property | _(none)_  | The property containing the cover image (URL, `data:` URI, vault-relative path, bare file name, wikilink such as `[[cover.jpg]]`, or markdown image). File names and wikilinks resolve like links. A missing vault file shows the spine. Falls back to `note.cover` if unset. |
+| Image fit      | Dropdown | `Contain` | How cover images fit the book shape. `Contain` preserves aspect ratio; `Cover` crops to fill.                                                                                                                                                                                 |
+| Aspect ratio   | Slider   | `1`       | `cardSize ÷ aspectRatio` determines book height. Range: 0.25–2.5, step 0.25.                                                                                                                                                                                                  |
 
 Typical aspect ratios:
 

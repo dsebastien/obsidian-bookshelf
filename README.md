@@ -9,7 +9,7 @@ A community plugin that adds a **Bookshelf** view type to [Obsidian Bases](https
 ## Features
 
 - **Bookshelf view for Bases** — register a new view type alongside Table, Cards, and Gallery.
-- **Cover-driven layout** — pick any property containing an image URL or vault path. Supports external URLs, `data:` URIs, and vault-relative paths.
+- **Cover-driven layout** — pick any property containing an image URL or vault path. Supports external URLs, `data:` URIs, vault-relative paths, bare file names, wikilinks (`[[cover.jpg]]`), and markdown images. A vault file that cannot be found falls back to the spine.
 - **Automatic spines** — notes without a cover get a colored spine with a vertical title, generated deterministically from the title so each book keeps its identity.
 - **Shelf textures** — choose from oak, walnut, cherry, mahogany, pine, ebony, brushed metal, dark metal, white marble, black marble, concrete, and slate.
 - **Grouping** — respects the Base's `groupBy` configuration. Each group becomes its own shelf with a header and count.

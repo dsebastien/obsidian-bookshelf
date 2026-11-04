@@ -1,6 +1,7 @@
-import { BasesView, Menu, NullValue } from 'obsidian'
+import { BasesView, Menu, NullValue, TFile } from 'obsidian'
 import type { QueryController, BasesEntry, BasesEntryGroup } from 'obsidian'
 import type { BookshelfPlugin } from '../plugin'
+import { parseCoverValue, toCssUrl } from './cover-url'
 
 // Type declarations are loaded from src/app/types/bases.d.ts
 
@@ -175,7 +176,7 @@ export class BookshelfView extends BasesView {
         // Skip if property doesn't exist or is null
         const coverValue =
             !rawCoverValue || rawCoverValue instanceof NullValue ? '' : rawCoverValue.toString()
-        const coverUrl = this.resolveCoverUrl(coverValue)
+        const coverUrl = this.resolveCoverUrl(coverValue, entry.file.path)
 
         // Book cover/spine
         const coverEl = bookEl.createDiv({ cls: 'bookshelf-book-cover' })
@@ -183,7 +184,7 @@ export class BookshelfView extends BasesView {
         if (coverUrl) {
             // Has cover image
             coverEl.addClass('bookshelf-book-cover--image')
-            coverEl.style.backgroundImage = `url('${coverUrl}')`
+            coverEl.style.backgroundImage = toCssUrl(coverUrl)
         } else {
             // Generate a colored spine
             coverEl.addClass('bookshelf-book-cover--spine')
@@ -305,21 +306,24 @@ export class BookshelfView extends BasesView {
     }
 
     /**
-     * Resolve cover value to a usable URL
-     * Handles both external URLs and vault-relative paths
+     * Resolve cover value to a usable URL.
+     * Handles external URLs, vault paths, bare file names, wikilinks and markdown images.
+     * Vault references go through the vault, then the metadata cache (same rules as links),
+     * so a bare name or a path with the wrong casing still finds the file.
+     * Returns '' when a vault file cannot be found, so the spine is shown instead of a blank cover.
      */
-    private resolveCoverUrl(cover: string): string {
-        if (!cover) return ''
+    private resolveCoverUrl(cover: string, sourcePath: string): string {
+        const ref = parseCoverValue(cover)
+        if (ref.kind === 'none') return ''
+        if (ref.kind === 'url') return ref.url
 
-        // Check if it's already a URL (http, https, data:)
-        if (/^(https?:\/\/|data:)/i.test(cover)) {
-            return cover
-        }
-
-        // Treat as vault-relative path - use Obsidian's resource path
-        // Remove leading slash if present for consistency
-        const normalizedPath = cover.startsWith('/') ? cover.slice(1) : cover
-        return this.app.vault.adapter.getResourcePath(normalizedPath)
+        const { vault, metadataCache } = this.app
+        const byPath = vault.getAbstractFileByPath(ref.linkpath)
+        const file =
+            byPath instanceof TFile
+                ? byPath
+                : metadataCache.getFirstLinkpathDest(ref.linkpath, sourcePath)
+        return file ? vault.getResourcePath(file) : ''
     }
 
     /**
