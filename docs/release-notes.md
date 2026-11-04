@@ -1,5 +1,17 @@
 # Release Notes
 
+## 1.2.0 (2026-11-04)
+
+### Features
+
+- **build:** ship curated release notes to the What's new tab and the release body
+
+### Bug Fixes
+
+- **build:** keep severity strings out of the options keptAtError copies
+- **plugin:** show covers with apostrophes and resolve covers like links
+- **plugin:** stop Immer from freezing the shared default settings
+
 ## 1.1.1 (2026-09-28)
 
 ### Bug Fixes

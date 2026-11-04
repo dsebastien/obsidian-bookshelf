@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0](https://github.com/dsebastien/obsidian-bookshelf/compare/1.1.1...1.2.0) (2026-11-04)
+
+### Features
+
+* **build:** ship curated release notes to the What's new tab and the release body ([87268f5](https://github.com/dsebastien/obsidian-bookshelf/commit/87268f5b0b0f1ca8fc580d96c6c4e992b95ff9c7))
+
+### Bug Fixes
+
+* **build:** keep severity strings out of the options keptAtError copies ([4060935](https://github.com/dsebastien/obsidian-bookshelf/commit/4060935eedd86c666d27e92ae591266d259e58c2))
+* **plugin:** show covers with apostrophes and resolve covers like links ([cc65d92](https://github.com/dsebastien/obsidian-bookshelf/commit/cc65d92aa97abb7acac112de9648946a9d24de1f))
+* **plugin:** stop Immer from freezing the shared default settings ([2fb822f](https://github.com/dsebastien/obsidian-bookshelf/commit/2fb822ffbbca18ece98921c4e4ba07bec498776f))
+
 ## [1.1.1](https://github.com/dsebastien/obsidian-bookshelf/compare/1.1.0...1.1.1) (2026-09-28)
 
 ### Bug Fixes
@@ -138,6 +150,7 @@ guard spec, AGENTS.md trap list. obsidian typings 1.12.0 -> 1.13.1.
 * remove unused eslint-disable directives ([d857e67](https://github.com/dsebastien/obsidian-bookshelf/commit/d857e679748993424880bb09dd2e5e19496b235a))
 * resolve lint errors ([9c51e47](https://github.com/dsebastien/obsidian-bookshelf/commit/9c51e4741ef90c34c04166a52872bec220e68ac6))
 * resolve TypeScript errors ([78b248d](https://github.com/dsebastien/obsidian-bookshelf/commit/78b248d7fbc19782472c37906dd5fdcedb5ba2f3))
+
 
 
 
