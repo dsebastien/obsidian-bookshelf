@@ -67,7 +67,50 @@ The cover property may contain:
 - A `data:` URI
 - A vault-relative path: `assets/covers/book.jpg` (resolved via Obsidian's resource path)
 
-If the cover property is missing or empty for a note, Bookshelf renders a colored spine with a vertical title instead. Spine colors are derived deterministically from the title, so the same note always gets the same color.
+If a note has no cover, or if its image can't be loaded, the book gets a default cover (see below).
+
+### Default covers
+
+Not every note has a cover image. Bookshelf binds those books itself: a hardcover drawn with CSS, with the title (and the author) lettered in gold leaf. There's no image file and nothing to download.
+
+Cloth is the default. You can switch to leather, library binding, a mix of the three, or the old colored spine in the view options (see [Default covers](./configuration.md#default-covers) in the configuration page).
+
+![Real covers and default covers on the same shelf](./assets/default-cover-mixed.png)
+
+The title comes from the `title` property, or from the file name when there's none. The color (and, with **Mixed**, the binding) is picked from the title. A book keeps the same look across views and reloads.
+
+You get a default cover when:
+
+- The cover property is missing or empty.
+- It points to a vault file that doesn't exist.
+- It's a URL that doesn't load: a 404, a dead host, or no network.
+
+#### Where the author comes from
+
+Set **Author property** in the view options to the property that holds the author. If you leave it empty, Bookshelf tries `author`, then `authors`.
+
+- A list shows the first author followed by "et al.".
+- A wikilink shows its display text: `[[People/Umberto Eco|Eco]]` shows "Eco", and `[[People/Umberto Eco]]` shows "Umberto Eco".
+- A formula works too. Handy for a Base that mixes books, albums and movies (see [Tips](./tips.md#default-covers-for-albums-movies-and-games)).
+
+With this note, the cover reads "David Thomas et al.":
+
+```yaml
+---
+title: The Pragmatic Programmer
+authors:
+    - '[[David Thomas]]'
+    - '[[Andrew Hunt]]'
+---
+```
+
+Screen readers get the same information: each cover is labeled "Title by Author".
+
+#### Spines
+
+Set **Aspect ratio** to `0.25` (any ratio of 0.4 or less works) and the default covers turn into spines: gold bands at the top and the bottom, and the title running from bottom to top. When the title has 16 characters or fewer, the author's last name is added after it.
+
+![Default covers as spines at aspect ratio 0.25](./assets/default-cover-spines.png)
 
 ### Grouping books across shelves
 

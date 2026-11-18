@@ -9,8 +9,8 @@ A community plugin that adds a **Bookshelf** view type to [Obsidian Bases](https
 ## Features
 
 - **Bookshelf view for Bases** — register a new view type alongside Table, Cards, and Gallery.
-- **Cover-driven layout** — pick any property containing an image URL or vault path. Supports external URLs, `data:` URIs, vault-relative paths, bare file names, wikilinks (`[[cover.jpg]]`), and markdown images. A vault file that cannot be found falls back to the spine.
-- **Automatic spines** — notes without a cover get a colored spine with a vertical title, generated deterministically from the title so each book keeps its identity.
+- **Cover-driven layout** — pick any property containing an image URL or vault path. Supports external URLs, `data:` URIs, vault-relative paths, bare file names, wikilinks (`[[cover.jpg]]`), and markdown images. A vault file that cannot be found, or an image URL that does not load, gets a default cover.
+- **Default covers** — notes without a cover image get a hardcover drawn in CSS, with the title and the author lettered in gold leaf. Pick cloth, leather, library binding, or a mix of the three; silver, copper or blind lettering; or the classic colored spine. The color and the binding come from the title, so each book keeps its look. Set the aspect ratio to 0.4 or less (e.g. `0.25`) and they turn into spines.
 - **Shelf textures** — choose from oak, walnut, cherry, mahogany, pine, ebony, brushed metal, dark metal, white marble, black marble, concrete, and slate.
 - **Grouping** — respects the Base's `groupBy` configuration. Each group becomes its own shelf with a header and count.
 - **Property display** — any property added to the Base's display order appears under each book. Rating properties are highlighted.
@@ -19,6 +19,14 @@ A community plugin that adds a **Bookshelf** view type to [Obsidian Bases](https
 - **Adjustable layout** — tune card size, gap between books, and aspect ratio directly from the view's options.
 - **Desktop & mobile** — no desktop-only APIs.
 - **What's new after updates.** After a plugin update, a one-time dialog shows the release notes you just received (including skipped versions) with ways to support development. Never shown on fresh installs or regular restarts.
+
+### Default covers
+
+No cover image? Bookshelf binds the book for you. Below: mixed bindings next to real covers, then default covers as spines. All the options are in [Configuration](./docs/configuration.md#default-covers).
+
+![Mixed default covers next to real covers on a wooden shelf](docs/assets/default-cover-mixed.png)
+
+![Default covers as spines, at aspect ratio 0.25](docs/assets/default-cover-spines.png)
 
 ## Requirements
 

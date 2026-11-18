@@ -13,7 +13,7 @@ Use it to browse books, movies, games, courses, papers, or any collection of not
 ## Key features
 
 - **New view type for Bases** — Bookshelf sits alongside Table, Cards, and Gallery.
-- **Real covers with graceful fallback** — cover images from any property, or a colored spine with the title when no cover is available.
+- **Real covers, and default covers for the rest** — cover images from any property. A note without one (or with an image that does not load) gets a bound hardcover with its title and author lettered in gold.
 - **Multiple shelf textures** — oak, walnut, cherry, mahogany, pine, ebony, brushed/dark metal, white/black marble, concrete, and slate.
 - **Respects Base groupings** — each `groupBy` group becomes its own shelf with a header and book count.
 - **Property display** — any property in the view's display order appears under each book; rating properties are highlighted.

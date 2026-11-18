@@ -23,7 +23,7 @@ When a new business rule is mentioned:
 - Same title → same color and same `mixed` style, always. Both come from `hashTitle` (the historical spine hash, unchanged, so `classic` colors did not move). Colors come from fixed dark palettes per style, never random HSL (foil needs contrast).
 - Title: `note.title`, else the file basename. Author: the `authorProperty` view option; when unset, `note.author`, then `note.authors`. A list shows its first value + " et al."; wikilinks show their display text.
 - Default covers are CSS + DOM text only: no image file, no bundled font.
-- Narrow covers (width / height < 0.4) show a spine layout. The spine adds the author's last name only when the title has ≤ 16 characters.
+- Narrow covers (width / height ≤ 0.4) show a spine layout. The spine adds the author's last name only when the title has ≤ 16 characters.
 - Under 96px wide, author and ornaments are hidden. A long word shrinks the title (`--cover-longest-word`); words never break in the middle.
 
 ## Book size
