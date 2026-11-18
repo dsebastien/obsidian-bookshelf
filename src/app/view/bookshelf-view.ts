@@ -1,6 +1,7 @@
 import { BasesView, ListValue, Menu, NullValue, TFile } from 'obsidian'
 import type { QueryController, BasesEntry, BasesEntryGroup } from 'obsidian'
 import type { BookshelfPlugin } from '../plugin'
+import { bookHeightFor, normalizeAspectRatio } from './aspect-ratio'
 import { parseCoverValue, toCssUrl } from './cover-url'
 import {
     classicSpineColor,
@@ -63,7 +64,7 @@ export class BookshelfView extends BasesView {
         // Cover settings
         const coverProperty = this.config.getAsPropertyId('coverProperty')
         const imageFit = (this.config.get('imageFit') as string) ?? 'contain'
-        const aspectRatio = (this.config.get('aspectRatio') as number) ?? 1
+        const aspectRatio = normalizeAspectRatio(this.config.get('aspectRatio'))
         const defaultCover = normalizeDefaultCover(this.config.get('defaultCover'))
         const coverFoil = normalizeFoil(this.config.get('coverFoil'))
         const authorProperty = this.config.getAsPropertyId('authorProperty')
@@ -73,7 +74,7 @@ export class BookshelfView extends BasesView {
 
         // Calculate book dimensions based on card size and aspect ratio
         const bookWidth = cardSize
-        const bookHeight = Math.round(cardSize / aspectRatio)
+        const bookHeight = bookHeightFor(bookWidth, aspectRatio)
 
         // Set CSS variables for sizing
         this.containerEl.style.setProperty('--book-width', `${bookWidth}px`)

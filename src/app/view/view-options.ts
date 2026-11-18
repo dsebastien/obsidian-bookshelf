@@ -1,4 +1,10 @@
 import type { BasesAllOptions } from 'obsidian'
+import {
+    ASPECT_RATIO_STEP,
+    DEFAULT_ASPECT_RATIO,
+    MAX_ASPECT_RATIO,
+    MIN_ASPECT_RATIO
+} from './aspect-ratio'
 
 /**
  * Returns the view options for the Bookshelf view.
@@ -120,10 +126,10 @@ export function getBookshelfViewOptions(): BasesAllOptions[] {
                     type: 'slider',
                     key: 'aspectRatio',
                     displayName: 'Aspect ratio',
-                    min: 0.25,
-                    max: 2.5,
-                    step: 0.25,
-                    default: 1
+                    min: MIN_ASPECT_RATIO,
+                    max: MAX_ASPECT_RATIO,
+                    step: ASPECT_RATIO_STEP,
+                    default: DEFAULT_ASPECT_RATIO
                 }
             ]
         }
