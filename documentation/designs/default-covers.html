@@ -1,0 +1,1230 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Bookshelf: default covers (issue #15) - design options</title>
+        <style>
+            /* ---------- Page chrome (stands in for Obsidian) ---------- */
+            :root {
+                --page-bg: #1e1e1e;
+                --page-fg: #dcddde;
+                --page-muted: #9a9a9a;
+                --panel-bg: #262626;
+                --border: #3a3a3a;
+                --accent: #a88bfa;
+            }
+            [data-theme='light'] {
+                --page-bg: #f6f6f6;
+                --page-fg: #222;
+                --page-muted: #666;
+                --panel-bg: #fff;
+                --border: #ddd;
+                --accent: #7c5cdb;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                font:
+                    15px/1.55 system-ui,
+                    -apple-system,
+                    'Segoe UI',
+                    Roboto,
+                    sans-serif;
+                background: var(--page-bg);
+                color: var(--page-fg);
+            }
+            main {
+                max-width: 1240px;
+                margin: 0 auto;
+                padding: 32px 24px 80px;
+            }
+            h1 {
+                font-size: 1.7rem;
+                margin: 0 0 4px;
+            }
+            h2 {
+                font-size: 1.25rem;
+                margin: 40px 0 6px;
+            }
+            h3 {
+                font-size: 1.02rem;
+                margin: 22px 0 6px;
+            }
+            p,
+            li {
+                max-width: 78ch;
+            }
+            .muted {
+                color: var(--page-muted);
+            }
+            code {
+                font-size: 0.88em;
+                background: var(--panel-bg);
+                border: 1px solid var(--border);
+                padding: 0 4px;
+                border-radius: 4px;
+            }
+            .tag {
+                display: inline-block;
+                font-size: 0.75rem;
+                padding: 1px 8px;
+                border-radius: 99px;
+                background: var(--accent);
+                color: #fff;
+                margin-left: 8px;
+                vertical-align: middle;
+            }
+
+            .controls {
+                position: sticky;
+                top: 0;
+                z-index: 50;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 14px 22px;
+                align-items: center;
+                padding: 12px 16px;
+                margin: 20px 0 8px;
+                background: var(--panel-bg);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                font-size: 0.88rem;
+            }
+            .controls label {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+            .controls select,
+            .controls input {
+                font: inherit;
+            }
+            .controls output {
+                min-width: 3ch;
+                display: inline-block;
+            }
+
+            .option-head {
+                display: flex;
+                align-items: baseline;
+                gap: 10px;
+            }
+            .option-head .num {
+                font-weight: 700;
+                color: var(--accent);
+            }
+
+            .swatches {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                margin: 6px 0;
+            }
+            .swatch {
+                width: 26px;
+                height: 26px;
+                border-radius: 4px;
+                border: 1px solid rgba(0, 0, 0, 0.3);
+            }
+
+            table {
+                border-collapse: collapse;
+                font-size: 0.9rem;
+            }
+            th,
+            td {
+                border: 1px solid var(--border);
+                padding: 6px 10px;
+                text-align: left;
+                vertical-align: top;
+            }
+
+            /* ---------- Shelf (simplified copy of the plugin's oak shelf) ---------- */
+            .bookshelf-shelf {
+                position: relative;
+                padding: 26px 20px 30px;
+                margin: 10px 0 34px;
+                border-radius: 6px;
+                background-color: #c4a77d;
+                background-image:
+                    repeating-linear-gradient(
+                        92deg,
+                        rgba(90, 56, 21, 0.1) 0 2px,
+                        transparent 2px 9px
+                    ),
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.08));
+                box-shadow:
+                    inset 0 2px 8px rgba(255, 255, 255, 0.2),
+                    inset 0 -2px 8px rgba(0, 0, 0, 0.12),
+                    0 4px 16px rgba(0, 0, 0, 0.22);
+            }
+            .bookshelf-shelf::after {
+                content: '';
+                position: absolute;
+                left: -6px;
+                right: -6px;
+                bottom: -12px;
+                height: 22px;
+                border-radius: 3px;
+                background: linear-gradient(180deg, #b0916a, #9b7c55);
+                box-shadow:
+                    0 6px 12px rgba(0, 0, 0, 0.26),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+            .bookshelf-books {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: flex-end;
+                position: relative;
+                z-index: 5;
+                gap: 18px var(--book-gap);
+                padding-bottom: 8px;
+            }
+
+            /* ---------- Book card: copied from src/styles.src.css ---------- */
+            .bookshelf-book {
+                display: flex;
+                flex-direction: column;
+                position: relative;
+                width: var(--book-width);
+            }
+            .bookshelf-book::before {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 5%;
+                right: 5%;
+                height: 10px;
+                background: radial-gradient(
+                    ellipse at center,
+                    rgba(0, 0, 0, 0.4) 0%,
+                    transparent 70%
+                );
+                transform: translateY(4px);
+                z-index: -1;
+            }
+            .bookshelf-book-cover {
+                position: relative;
+                cursor: pointer;
+                width: var(--book-width);
+                height: var(--book-height);
+                border-radius: 2px 6px 6px 2px;
+                transition:
+                    transform 0.15s ease-out,
+                    box-shadow 0.15s ease-out;
+                box-shadow:
+                    inset 1px 1px 0 1px rgba(255, 255, 255, 0.2),
+                    inset 0 0 0 1px rgba(0, 0, 0, 0.1),
+                    -3px 0 6px -2px rgba(0, 0, 0, 0.4),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.5),
+                    -6px 6px 12px -4px rgba(0, 0, 0, 0.3);
+            }
+            .bookshelf-book-cover::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                background-image: linear-gradient(
+                    to right,
+                    rgba(0, 0, 0, 0.25),
+                    rgba(255, 255, 255, 0.35) 1%,
+                    transparent 6%,
+                    rgba(0, 0, 0, 0.2) 8%,
+                    rgba(255, 255, 255, 0.25) 9%,
+                    transparent 20%
+                );
+                pointer-events: none;
+                z-index: 3;
+            }
+            .bookshelf-book-cover::after {
+                content: '';
+                position: absolute;
+                bottom: -3px;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
+                border-radius: 0 0 2px 2px;
+                pointer-events: none;
+            }
+            .bookshelf-book-cover:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow:
+                    inset 1px 1px 0 1px rgba(255, 255, 255, 0.2),
+                    inset 0 0 0 1px rgba(0, 0, 0, 0.1),
+                    -4px 2px 10px -2px rgba(0, 0, 0, 0.4),
+                    0 12px 20px -8px rgba(0, 0, 0, 0.5),
+                    -10px 14px 24px -6px rgba(0, 0, 0, 0.35);
+            }
+            .bookshelf-book-cover--image {
+                background-size: contain;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: #2a2a2a;
+            }
+            .bookshelf-book-cover--spine {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+            .bookshelf-spine-title {
+                font-weight: 600;
+                padding: 0 16px;
+                text-align: center;
+                line-height: 1.25;
+                font-size: 1rem;
+                writing-mode: vertical-rl;
+                text-orientation: mixed;
+                transform: rotate(180deg);
+                color: rgba(255, 255, 255, 0.95);
+                text-shadow:
+                    1px 1px 3px rgba(0, 0, 0, 0.7),
+                    0 0 10px rgba(0, 0, 0, 0.4);
+                max-height: calc(var(--book-height) - 30px);
+                overflow: hidden;
+                letter-spacing: 0.5px;
+                z-index: 2;
+            }
+            .bookshelf-book-info {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                padding: 12px 4px 0;
+            }
+            .bookshelf-book-property {
+                font-size: 0.85rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                color: #2b1d0e;
+                font-weight: 500;
+            }
+            .bookshelf-book-property + .bookshelf-book-property {
+                font-weight: 400;
+                opacity: 0.75;
+                font-size: 0.78rem;
+            }
+
+            /* ======================================================================
+       PROPOSED: default cover. Everything below is the CSS that would go in
+       src/styles.src.css. Text sizes use container query units, so the
+       cover scales with the "Card size" and "Aspect ratio" view options.
+       ====================================================================== */
+            .bookshelf-default-cover {
+                --foil: linear-gradient(
+                    170deg,
+                    #f9eaa8 0%,
+                    #d9b44a 28%,
+                    #9c7424 52%,
+                    #f0d478 72%,
+                    #b38a30 100%
+                );
+                --foil-line: linear-gradient(
+                    90deg,
+                    #9c7424,
+                    #f3dc8a 30%,
+                    #c69d3c 60%,
+                    #f0d478 80%,
+                    #9c7424
+                );
+                --foil-solid: #cfa846;
+                --serif:
+                    'EB Garamond', Garamond, 'Libre Baskerville', Baskerville, 'Book Antiqua',
+                    Palatino, Georgia, 'DejaVu Serif', serif;
+                position: absolute;
+                inset: 0;
+                overflow: hidden;
+                border-radius: inherit;
+                container: dc / size;
+                background-color: var(--cover-bg);
+                background-image: var(--texture);
+                font-family: var(--serif);
+                z-index: 1;
+            }
+            [data-foil='silver'] .bookshelf-default-cover {
+                --foil: linear-gradient(
+                    170deg,
+                    #ffffff 0%,
+                    #c9ccd1 28%,
+                    #7d828a 52%,
+                    #eef0f3 72%,
+                    #9aa0a8 100%
+                );
+                --foil-line: linear-gradient(
+                    90deg,
+                    #7d828a,
+                    #f4f5f7 30%,
+                    #aab0b8 60%,
+                    #eef0f3 80%,
+                    #7d828a
+                );
+                --foil-solid: #c3c7cd;
+            }
+            [data-foil='copper'] .bookshelf-default-cover {
+                --foil: linear-gradient(
+                    170deg,
+                    #ffd3b0 0%,
+                    #d08a5a 28%,
+                    #8a4a25 52%,
+                    #f0b48a 72%,
+                    #a8603a 100%
+                );
+                --foil-line: linear-gradient(
+                    90deg,
+                    #8a4a25,
+                    #f6c7a2 30%,
+                    #c27a4c 60%,
+                    #f0b48a 80%,
+                    #8a4a25
+                );
+                --foil-solid: #c88456;
+            }
+            [data-foil='blind'] .bookshelf-default-cover {
+                --foil: linear-gradient(170deg, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.5));
+                --foil-line: linear-gradient(90deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45));
+                --foil-solid: rgba(0, 0, 0, 0.45);
+            }
+
+            /* Gold leaf text: the gradient is clipped to the glyphs. drop-shadow
+       (not text-shadow) gives the pressed-in edge, because text-shadow
+       would show through the transparent fill. */
+            .dc-foil {
+                background-image: var(--foil);
+                background-size: 100% 1.2em;
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-box-decoration-break: clone;
+                box-decoration-break: clone;
+                color: transparent;
+            }
+            .dc-title,
+            .dc-author,
+            .dc-spine-text {
+                filter: drop-shadow(-0.5px -0.5px 0 rgba(0, 0, 0, 0.65))
+                    drop-shadow(0.5px 0.7px 0 rgba(255, 255, 255, 0.16));
+            }
+            [data-foil='blind'] .dc-title,
+            [data-foil='blind'] .dc-author,
+            [data-foil='blind'] .dc-spine-text {
+                filter: drop-shadow(0.6px 0.8px 0 rgba(255, 255, 255, 0.14));
+            }
+
+            .dc-face {
+                position: absolute;
+                inset: 0;
+            }
+            .dc-frame,
+            .dc-rule,
+            .dc-orn,
+            .dc-rays,
+            .dc-label {
+                display: none;
+            }
+            .dc-content {
+                position: absolute;
+                inset: 13cqmin 11cqmin 11cqmin 15cqmin;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4cqmin;
+                text-align: center;
+            }
+            .dc-title {
+                /* --longest = length of the longest word, set by the view, so a long
+           word shrinks the title instead of breaking in the middle. */
+                font-size: clamp(7px, min(10.5cqw, calc(105cqw / var(--longest, 8))), 44px);
+                line-height: 1.12;
+                font-weight: 600;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 4;
+                overflow: hidden;
+                overflow-wrap: break-word;
+            }
+            .dc-author {
+                font-size: clamp(6px, 6.6cqw, 26px);
+                font-style: italic;
+                line-height: 1.15;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 2;
+                overflow: hidden;
+            }
+            .dc-rule {
+                height: max(1px, 0.7cqmin);
+                width: 46%;
+                background: var(--foil-line);
+                box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+            }
+
+            /* --- Style: cloth hardcover --- */
+            [data-style='cloth'] .dc-frame {
+                display: block;
+                position: absolute;
+                inset: 6cqmin 6cqmin 6cqmin 10cqmin;
+                border: max(1px, 0.6cqmin) solid transparent;
+                border-image: var(--foil-line) 1;
+                box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+            }
+            [data-style='cloth'] .dc-frame::before {
+                content: '';
+                position: absolute;
+                inset: 2cqmin;
+                border: 1px solid transparent;
+                border-image: var(--foil-line) 1;
+                opacity: 0.8;
+            }
+            [data-style='cloth'] .dc-title {
+                font-variant: small-caps;
+                letter-spacing: 0.03em;
+            }
+            [data-style='cloth'] .dc-orn {
+                display: block;
+                width: 44%;
+                height: 6cqmin;
+                flex: none;
+                background:
+                    linear-gradient(
+                            45deg,
+                            transparent 40%,
+                            var(--foil-solid) 40% 60%,
+                            transparent 60%
+                        )
+                        center / 4cqmin 4cqmin no-repeat,
+                    linear-gradient(
+                            -45deg,
+                            transparent 40%,
+                            var(--foil-solid) 40% 60%,
+                            transparent 60%
+                        )
+                        center / 4cqmin 4cqmin no-repeat,
+                    var(--foil-line) left center / 38% max(1px, 0.6cqmin) no-repeat,
+                    var(--foil-line) right center / 38% max(1px, 0.6cqmin) no-repeat;
+            }
+
+            /* --- Style: leather with a title label --- */
+            [data-style='leather'] .dc-frame {
+                display: block;
+                position: absolute;
+                inset: 5cqmin 5cqmin 5cqmin 9cqmin;
+                border: 1px solid rgba(0, 0, 0, 0.5);
+                box-shadow:
+                    1px 1px 0 rgba(255, 255, 255, 0.08),
+                    inset 1px 1px 0 rgba(255, 255, 255, 0.06);
+            }
+            [data-style='leather'] .dc-frame::before {
+                content: '';
+                position: absolute;
+                inset: 3cqmin;
+                border: max(1px, 0.5cqmin) solid transparent;
+                border-image: var(--foil-line) 1;
+            }
+            [data-style='leather'] .dc-frame::after {
+                content: '';
+                position: absolute;
+                inset: 1.4cqmin;
+                --d: radial-gradient(circle, var(--foil-solid) 0 45%, transparent 50%);
+                background:
+                    var(--d) 0 0 / 4cqmin 4cqmin no-repeat,
+                    var(--d) 100% 0 / 4cqmin 4cqmin no-repeat,
+                    var(--d) 0 100% / 4cqmin 4cqmin no-repeat,
+                    var(--d) 100% 100% / 4cqmin 4cqmin no-repeat;
+            }
+            [data-style='leather'] .dc-content {
+                justify-content: flex-start;
+                padding-top: 10cqh;
+            }
+            [data-style='leather'] .dc-label {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2cqmin;
+                width: 100%;
+                padding: 5cqmin 5cqmin;
+                background: var(--label-bg);
+                border: max(1px, 0.5cqmin) solid transparent;
+                border-image: var(--foil-line) 1;
+                box-shadow:
+                    inset 0 0 6cqmin rgba(0, 0, 0, 0.45),
+                    0 1px 2px rgba(0, 0, 0, 0.4);
+            }
+            [data-style='leather'] .dc-title {
+                font-size: clamp(6px, min(9cqw, calc(72cqw / var(--longest, 8))), 40px);
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                -webkit-line-clamp: 3;
+            }
+            [data-style='leather'] .dc-author {
+                margin-top: 2cqmin;
+            }
+
+            /* --- Style: library buckram --- */
+            [data-style='buckram'] .dc-content {
+                justify-content: flex-start;
+                padding-top: 2cqh;
+                gap: 3.5cqmin;
+            }
+            [data-style='buckram'] .dc-rule {
+                display: block;
+                width: 70%;
+            }
+            [data-style='buckram'] .dc-title {
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                font-size: clamp(6px, min(9.2cqw, calc(82cqw / var(--longest, 8))), 40px);
+                font-weight: 700;
+            }
+            [data-style='buckram'] .dc-author {
+                margin-top: auto;
+                font-style: normal;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-size: clamp(6px, 5.4cqw, 22px);
+            }
+
+            /* --- Style: art deco --- */
+            [data-style='deco'] .dc-frame {
+                display: block;
+                position: absolute;
+                inset: 6cqmin 6cqmin 6cqmin 10cqmin;
+                border: max(1px, 0.6cqmin) solid transparent;
+                border-image: var(--foil-line) 1;
+            }
+            [data-style='deco'] .dc-frame::before,
+            [data-style='deco'] .dc-frame::after {
+                content: '';
+                position: absolute;
+                width: 9cqmin;
+                height: 9cqmin;
+                border: max(1px, 0.6cqmin) solid transparent;
+                border-image: var(--foil-line) 1;
+            }
+            [data-style='deco'] .dc-frame::before {
+                top: 2cqmin;
+                left: 2cqmin;
+                border-right: 0;
+                border-bottom: 0;
+            }
+            [data-style='deco'] .dc-frame::after {
+                bottom: 2cqmin;
+                right: 2cqmin;
+                border-left: 0;
+                border-top: 0;
+            }
+            [data-style='deco'] .dc-rays {
+                display: block;
+                position: absolute;
+                left: 10cqmin;
+                right: 6cqmin;
+                bottom: 6cqmin;
+                height: 38%;
+                background: repeating-conic-gradient(
+                    from -90deg at 50% 100%,
+                    var(--foil-solid) 0deg 1.1deg,
+                    transparent 1.1deg 10deg
+                );
+                -webkit-mask: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent 95%);
+                mask: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent 95%);
+                opacity: 0.75;
+            }
+            [data-style='deco'] .dc-content {
+                justify-content: flex-start;
+                padding-top: 6cqh;
+                bottom: 40%;
+            }
+            [data-style='deco'] .dc-title {
+                text-transform: uppercase;
+                letter-spacing: 0.12em;
+                font-weight: 500;
+                font-size: clamp(6px, min(8.4cqw, calc(70cqw / var(--longest, 8))), 36px);
+            }
+            [data-style='deco'] .dc-rule {
+                display: block;
+                width: 24%;
+            }
+            [data-style='deco'] .dc-author {
+                font-style: normal;
+                text-transform: uppercase;
+                letter-spacing: 0.18em;
+                font-size: clamp(6px, 4.6cqw, 20px);
+            }
+
+            /* --- Spine layout: used when the cover is narrow (aspect ratio 0.25) --- */
+            .dc-spine {
+                display: none;
+                position: absolute;
+                inset: 0;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-between;
+                padding: 6cqh 0;
+            }
+            .dc-band {
+                width: 100%;
+                height: 5cqh;
+                flex: none;
+                position: relative;
+            }
+            .dc-band::before,
+            .dc-band::after {
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 0;
+                height: max(1px, 1.6cqw);
+                background: var(--foil-line);
+                box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+            }
+            .dc-band::before {
+                top: 0;
+            }
+            .dc-band::after {
+                bottom: 0;
+            }
+            .dc-spine-text {
+                flex: 1;
+                min-height: 0;
+                margin: 4cqh 0;
+                writing-mode: vertical-rl;
+                text-orientation: mixed;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: clamp(7px, 24cqw, 20px);
+                font-weight: 600;
+                letter-spacing: 0.04em;
+            }
+            [data-spine-dir='btt'] .dc-spine-text {
+                transform: rotate(180deg);
+            }
+            .dc-spine-author {
+                font-size: 0.72em;
+                font-weight: 400;
+                font-style: italic;
+            }
+
+            @container dc (max-aspect-ratio: 2/5) {
+                .dc-face {
+                    display: none;
+                }
+                .dc-spine {
+                    display: flex;
+                }
+            }
+            /* Small cards: drop the details that become noise */
+            @container dc (max-width: 96px) {
+                .dc-author,
+                .dc-orn,
+                .dc-rays {
+                    display: none;
+                }
+                .dc-frame::before {
+                    display: none;
+                }
+            }
+            @container dc (max-width: 64px) {
+                .dc-title {
+                    -webkit-line-clamp: 3;
+                }
+                .dc-rule {
+                    display: none;
+                }
+            }
+
+            /* Book shadows off: keep the plugin rule for the 3D shadows. */
+        </style>
+    </head>
+    <body>
+        <main id="app">
+            <h1>Default covers for books without an image</h1>
+            <p class="muted">
+                Design options for
+                <a href="https://github.com/dsebastien/obsidian-bookshelf/issues/15">issue #15</a>.
+                Each option is pure CSS on a <code>div</code> (no image file, no web font). Use the
+                controls to try the card sizes and aspect ratios of the Bases view options. Hover a
+                book to see the lift effect.
+            </p>
+
+            <h2>What the plugin does today</h2>
+            <p>
+                When the cover property is empty, or when it points to a vault file that does not
+                exist, the plugin draws a colored block (HSL color from a hash of the title) with
+                the title written vertically in white. When the cover property holds a URL that does
+                not load (404, offline, renamed host), the plugin sets it as
+                <code>background-image</code> anyway, so the book is an empty gray block. That
+                second case is the real "empty spot".
+            </p>
+
+            <div class="controls" id="controls">
+                <label
+                    >Card size
+                    <input type="range" id="size" min="50" max="400" step="10" value="150" />
+                    <output id="sizeOut">150</output>px</label
+                >
+                <label
+                    >Aspect ratio
+                    <select id="aspect">
+                        <option value="0.25">0.25 (spine)</option>
+                        <option value="0.5">0.5</option>
+                        <option value="0.75">0.75 (portrait)</option>
+                        <option value="1" selected>1 (default)</option>
+                        <option value="1.5">1.5 (landscape)</option>
+                    </select>
+                </label>
+                <label
+                    >Colors
+                    <select id="palette">
+                        <option value="curated" selected>Curated bookcloth palette</option>
+                        <option value="hsl">Current HSL hash</option>
+                    </select>
+                </label>
+                <label
+                    >Foil
+                    <select id="foil">
+                        <option value="gold" selected>Gold</option>
+                        <option value="silver">Silver</option>
+                        <option value="copper">Copper</option>
+                        <option value="blind">Blind (no foil)</option>
+                    </select>
+                </label>
+                <label><input type="checkbox" id="author" checked /> Author</label>
+                <label
+                    >Spine text
+                    <select id="spineDir">
+                        <option value="btt" selected>Bottom to top (as today)</option>
+                        <option value="ttb">Top to bottom</option>
+                    </select>
+                </label>
+                <label
+                    >Theme
+                    <select id="theme">
+                        <option value="dark" selected>Dark</option>
+                        <option value="light">Light</option>
+                    </select>
+                </label>
+            </div>
+
+            <div id="options"></div>
+
+            <h2>Spine view (aspect ratio 0.25)</h2>
+            <p class="muted">
+                The cover switches to a spine layout by a CSS container query when it is narrower
+                than 2:5. No new setting is needed. The left book of each group is the current
+                behavior.
+            </p>
+            <div class="bookshelf-shelf" data-fixed-aspect="0.25">
+                <div class="bookshelf-books" id="spines"></div>
+            </div>
+
+            <h2>Palettes</h2>
+            <p>
+                The curated palettes hold dark, saturated colors that real bookcloth and leather
+                use. Gold reads well on all of them. The current HSL hash can give light or gray
+                colors where gold foil has no contrast (switch "Colors" above to see it). The same
+                title always gives the same color, because the index comes from the hash that the
+                plugin already uses.
+            </p>
+            <div id="palettes"></div>
+
+            <h2>Proposal</h2>
+            <h3>Recommendation</h3>
+            <p>
+                Ship option 2 (cloth hardcover) as the new default, and keep the current look as the
+                "Classic" choice, which is the "turn it off" option of the issue. Add options 3, 4
+                and 6 in the same release, because each one is about 30 lines of CSS on the same
+                DOM. Leave option 5 (art deco) out unless you like it: it is the weakest at small
+                card sizes.
+            </p>
+
+            <h3>Settings (view options, "Cover" group)</h3>
+            <table>
+                <tr>
+                    <th>Key</th>
+                    <th>Type</th>
+                    <th>Default</th>
+                    <th>Values</th>
+                </tr>
+                <tr>
+                    <td><code>defaultCover</code></td>
+                    <td>dropdown "Cover without image"</td>
+                    <td><code>cloth</code></td>
+                    <td>classic, cloth, leather, library, mixed</td>
+                </tr>
+                <tr>
+                    <td><code>authorProperty</code></td>
+                    <td>property "Author property"</td>
+                    <td><code>note.author</code></td>
+                    <td>
+                        any property. A list shows the first value plus "et al.", and wikilinks show
+                        their display text.
+                    </td>
+                </tr>
+                <tr>
+                    <td><code>coverFoil</code></td>
+                    <td>dropdown "Foil"</td>
+                    <td><code>gold</code></td>
+                    <td>gold, silver, copper, blind</td>
+                </tr>
+            </table>
+
+            <h3>Rules</h3>
+            <ol>
+                <li>
+                    The plugin uses a default cover when the cover value is empty, when the vault
+                    file is missing, and also when an image URL fails to load (probe with
+                    <code>new Image()</code>, then swap the class on <code>error</code>). The last
+                    case fixes the gray block.
+                </li>
+                <li>
+                    The title comes from <code>note.title</code>, else from the file name (same as
+                    today). The color index and the style for "mixed" come from the existing title
+                    hash, so a book keeps its look across views and reloads.
+                </li>
+                <li>
+                    The view sets <code>--longest</code> (the length of the longest word in the
+                    title). The title size shrinks for a long word, so a word never breaks in the
+                    middle.
+                </li>
+                <li>
+                    The text is real DOM text, clamped to 4 lines for the title and 2 lines for the
+                    author. Sizes use container query units, so the cover scales from 50px to 800px.
+                    The author and the ornaments disappear under 96px wide.
+                </li>
+                <li>
+                    The spine layout starts when width / height is below 0.4, which is the 0.25 step
+                    of the aspect ratio slider. The spine shows the last name of the author only
+                    when the title has 16 characters or fewer.
+                </li>
+                <li>
+                    The cover element gets <code>aria-label="Title by Author"</code>, so screen
+                    readers read it.
+                </li>
+                <li>No font is bundled. The serif stack falls back to the system serif.</li>
+            </ol>
+
+            <h3>Implementation plan</h3>
+            <ol>
+                <li>
+                    <code>src/app/view/default-cover.ts</code>: pure functions
+                    <code>hashTitle</code> (moved from <code>generateSpineColor</code>),
+                    <code>pickCoverColor</code>, <code>pickCoverStyle</code>,
+                    <code>formatAuthor</code>, with a spec file.
+                </li>
+                <li>
+                    <code>bookshelf-view.ts</code> <code>renderBook</code>: build the face and spine
+                    DOM, set <code>--cover-bg</code> and <code>--label-bg</code>, set
+                    <code>data-style</code>, and add the image error probe.
+                </li>
+                <li>
+                    <code>styles.src.css</code>: the CSS of this page (the part under "PROPOSED"),
+                    inside <code>@layer bs-components</code>.
+                </li>
+                <li><code>view-options.ts</code>: the three new options.</li>
+                <li>
+                    Docs: <code>docs/configuration.md</code>,
+                    <code>documentation/Business Rules.md</code>, release notes.
+                </li>
+            </ol>
+        </main>
+
+        <script>
+            ;(() => {
+                // Same hash as BookshelfView.generateSpineColor in the plugin.
+                function hash(s) {
+                    let h = 0
+                    for (let i = 0; i < s.length; i++) {
+                        h = (h << 5) - h + s.charCodeAt(i)
+                        h = h & h
+                    }
+                    return h
+                }
+                function hslColor(title) {
+                    const h = hash(title)
+                    return `hsl(${Math.abs(h) % 360}, ${30 + (Math.abs(h >> 8) % 30)}%, ${35 + (Math.abs(h >> 16) % 20)}%)`
+                }
+
+                const PALETTES = {
+                    cloth: [
+                        '#5e1a1d',
+                        '#1d2a44',
+                        '#1f3d2b',
+                        '#4a2e1f',
+                        '#2b2b2e',
+                        '#3d2440',
+                        '#1f4a4f',
+                        '#6b3a1e',
+                        '#2f3f5a',
+                        '#4f4526'
+                    ],
+                    leather: [
+                        '#4a2a18',
+                        '#5c1f1a',
+                        '#2a1a12',
+                        '#1e2b22',
+                        '#3b2416',
+                        '#1c1a19',
+                        '#6a3b1c',
+                        '#2b2236'
+                    ],
+                    library: [
+                        '#7d2324',
+                        '#24406b',
+                        '#2f5a3a',
+                        '#2a2a2a',
+                        '#5a2d55',
+                        '#7a5520',
+                        '#1f5257',
+                        '#4b3a2a'
+                    ],
+                    deco: ['#0f2a2e', '#1b1b1f', '#2a1630', '#13263f', '#3a1a14', '#1d3324']
+                }
+                const LABELS = ['#6e1c1c', '#141414', '#1d3a2a', '#2a2140', '#4a1a2a']
+
+                const noise = (freq, oct, slope, seed) =>
+                    `url("data:image/svg+xml,${encodeURIComponent(
+                        `<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='${freq}' numOctaves='${oct}' seed='${seed}' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  ${slope} 0 0 0 0'/></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`
+                    )}")`
+                const TEXTURES = {
+                    cloth: [
+                        'repeating-linear-gradient(0deg, rgba(255,255,255,.045) 0 1px, transparent 1px 3px)',
+                        'repeating-linear-gradient(90deg, rgba(0,0,0,.09) 0 1px, transparent 1px 3px)',
+                        noise('.9', 2, '.35', 4),
+                        'radial-gradient(ellipse at 40% 30%, rgba(255,255,255,.08), transparent 65%)',
+                        'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.28) 100%)'
+                    ].join(','),
+                    leather: [
+                        noise('.75', 3, '.4', 9),
+                        noise('.06', 2, '.22', 2),
+                        'radial-gradient(ellipse at 38% 30%, rgba(255,230,200,.13), transparent 60%)',
+                        'radial-gradient(ellipse at center, transparent 48%, rgba(0,0,0,.5) 100%)'
+                    ].join(','),
+                    library: [
+                        'repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 2px)',
+                        'repeating-linear-gradient(90deg, rgba(0,0,0,.12) 0 1px, transparent 1px 2px)',
+                        noise('1.2', 1, '.3', 6),
+                        'radial-gradient(ellipse at center, transparent 62%, rgba(0,0,0,.22) 100%)'
+                    ].join(','),
+                    deco: [
+                        noise('.9', 2, '.25', 11),
+                        'linear-gradient(160deg, rgba(255,255,255,.07), transparent 45%, rgba(0,0,0,.25))'
+                    ].join(',')
+                }
+                const CSS_STYLE = {
+                    cloth: 'cloth',
+                    leather: 'leather',
+                    library: 'buckram',
+                    deco: 'deco'
+                }
+
+                const BOOKS = [
+                    { title: 'Meditations', author: 'Marcus Aurelius' },
+                    { title: 'How to Take Smart Notes', author: 'Sönke Ahrens' },
+                    { title: 'The Name of the Rose', author: 'Umberto Eco' },
+                    { image: true, title: 'A book with a real cover', author: 'Some Author' },
+                    { title: 'Thinking, Fast and Slow', author: 'Daniel Kahneman' },
+                    { title: 'Dune', author: 'Frank Herbert' },
+                    {
+                        title: 'A Very Long Title About the Organization of Personal Knowledge in the Digital Age',
+                        author: ''
+                    },
+                    { title: 'The Pragmatic Programmer', author: 'Andrew Hunt et al.' },
+                    { title: 'Ulysses', author: 'James Joyce' }
+                ]
+                const FAKE_IMAGE = `url("data:image/svg+xml,${encodeURIComponent(
+                    "<svg xmlns='http://www.w3.org/2000/svg' width='200' height='300'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#ff7a59'/><stop offset='1' stop-color='#6a3df0'/></linearGradient></defs><rect width='200' height='300' fill='url(#g)'/><circle cx='140' cy='90' r='50' fill='#ffd166' opacity='.9'/><text x='16' y='230' font-family='Helvetica,Arial' font-weight='700' font-size='26' fill='#fff'>REAL</text><text x='16' y='262' font-family='Helvetica,Arial' font-weight='700' font-size='26' fill='#fff'>COVER</text></svg>"
+                )}")`
+
+                const OPTIONS = [
+                    {
+                        id: 'classic',
+                        name: 'Classic (current behavior)',
+                        desc: 'Kept as the "turn it off" choice. Colored block, white vertical title, no author.'
+                    },
+                    {
+                        id: 'cloth',
+                        name: 'Cloth hardcover',
+                        rec: true,
+                        desc: 'Linen weave, double gold rule frame, title in small caps, a diamond ornament, author in italics. The closest match to the issue.'
+                    },
+                    {
+                        id: 'leather',
+                        name: 'Leather with title label',
+                        desc: 'Grained leather, a blind-tooled outer frame, a gold inner frame with corner dots, and the title on a dark label with a gold border.'
+                    },
+                    {
+                        id: 'library',
+                        name: 'Library buckram',
+                        desc: 'Plain library binding. Title in caps between two gold rules at the top, author at the foot. The most legible at small card sizes.'
+                    },
+                    {
+                        id: 'deco',
+                        name: 'Art deco',
+                        desc: 'Stepped corners and a gold sunburst. More decorative. The sunburst disappears below 96px.'
+                    },
+                    {
+                        id: 'mixed',
+                        name: 'Mixed library',
+                        desc: 'Each book gets cloth, leather or library from its title hash, so a shelf looks like a real old bookcase. Contrarian pick: probably the best looking shelf.'
+                    }
+                ]
+
+                const $ = (id) => document.getElementById(id)
+                const state = () => ({
+                    size: +$('size').value,
+                    aspect: +$('aspect').value,
+                    palette: $('palette').value,
+                    foil: $('foil').value,
+                    author: $('author').checked,
+                    spineDir: $('spineDir').value
+                })
+
+                function el(tag, cls, parent, text) {
+                    const e = document.createElement(tag)
+                    if (cls) e.className = cls
+                    if (text != null) e.textContent = text
+                    if (parent) parent.appendChild(e)
+                    return e
+                }
+
+                function resolveStyle(optionId, title) {
+                    if (optionId !== 'mixed') return optionId
+                    return ['cloth', 'leather', 'library'][Math.abs(hash(title) >> 4) % 3]
+                }
+
+                function renderBook(container, book, optionId, s) {
+                    const bookEl = el('div', 'bookshelf-book', container)
+                    const cover = el('div', 'bookshelf-book-cover', bookEl)
+                    cover.setAttribute(
+                        'aria-label',
+                        book.author ? `${book.title} by ${book.author}` : book.title
+                    )
+
+                    if (book.image) {
+                        cover.classList.add('bookshelf-book-cover--image')
+                        cover.style.backgroundImage = FAKE_IMAGE
+                    } else if (optionId === 'classic') {
+                        cover.classList.add('bookshelf-book-cover--spine')
+                        cover.style.backgroundColor = hslColor(book.title)
+                        el(
+                            'div',
+                            'bookshelf-spine-title',
+                            cover,
+                            book.title.length > 25 ? book.title.slice(0, 24) + '…' : book.title
+                        )
+                    } else {
+                        const style = resolveStyle(optionId, book.title)
+                        const h = Math.abs(hash(book.title))
+                        const pal = PALETTES[style]
+                        const dc = el('div', 'bookshelf-default-cover', cover)
+                        dc.dataset.style = CSS_STYLE[style]
+                        dc.style.setProperty(
+                            '--cover-bg',
+                            s.palette === 'hsl' ? hslColor(book.title) : pal[h % pal.length]
+                        )
+                        dc.style.setProperty('--label-bg', LABELS[(h >> 3) % LABELS.length])
+                        dc.style.setProperty('--texture', TEXTURES[style])
+                        dc.style.setProperty(
+                            '--longest',
+                            String(Math.max(6, ...book.title.split(/\s+/).map((w) => w.length)))
+                        )
+
+                        const showAuthor = s.author && book.author
+                        const face = el('div', 'dc-face', dc)
+                        el('div', 'dc-frame', face)
+                        el('div', 'dc-rays', face)
+                        const content = el('div', 'dc-content', face)
+                        const target =
+                            style === 'leather' ? el('div', 'dc-label', content) : content
+                        if (style === 'library') el('div', 'dc-rule', target)
+                        el('span', 'dc-foil', el('div', 'dc-title', target), book.title)
+                        if (style === 'library' || style === 'deco') el('div', 'dc-rule', target)
+                        if (style === 'cloth' && showAuthor) el('div', 'dc-orn', target)
+                        if (showAuthor)
+                            el(
+                                'span',
+                                'dc-foil',
+                                el('div', 'dc-author', style === 'leather' ? content : target),
+                                book.author
+                            )
+
+                        const spine = el('div', 'dc-spine', dc)
+                        el('div', 'dc-band', spine)
+                        const st = el('div', 'dc-spine-text', spine)
+                        el('span', 'dc-foil', st, book.title)
+                        // The spine has room for one line: the author only goes on short titles.
+                        if (showAuthor && book.title.length <= 16) {
+                            el('span', 'dc-foil', st, '  ·  ')
+                            el(
+                                'span',
+                                'dc-foil dc-spine-author',
+                                st,
+                                book.author.split(' ').slice(-1)[0]
+                            )
+                        }
+                        el('div', 'dc-band', spine)
+                    }
+
+                    const info = el('div', 'bookshelf-book-info', bookEl)
+                    el('div', 'bookshelf-book-property', info, book.title)
+                    el('div', 'bookshelf-book-property', info, book.author || ' ')
+                }
+
+                function setSize(node, size, aspect) {
+                    node.style.setProperty('--book-width', `${size}px`)
+                    node.style.setProperty('--book-height', `${Math.round(size / aspect)}px`)
+                    node.style.setProperty('--book-gap', `20px`)
+                }
+
+                function render() {
+                    const s = state()
+                    $('sizeOut').textContent = s.size
+                    document.documentElement.dataset.theme = $('theme').value
+                    document.body.dataset.foil = s.foil
+                    document.body.dataset.spineDir = s.spineDir
+
+                    const root = $('options')
+                    root.innerHTML = ''
+                    OPTIONS.forEach((o, i) => {
+                        const head = el('div', 'option-head', root)
+                        const h2 = el('h2', '', head)
+                        el('span', 'num', h2, `${i + 1}. `)
+                        h2.append(o.name)
+                        if (o.rec) el('span', 'tag', h2, 'Recommended')
+                        el('p', 'muted', root, o.desc)
+                        const shelf = el('div', 'bookshelf-shelf', root)
+                        setSize(shelf, s.size, s.aspect)
+                        const row = el('div', 'bookshelf-books', shelf)
+                        BOOKS.forEach((b) => renderBook(row, b, o.id, s))
+                    })
+
+                    const spines = $('spines')
+                    spines.innerHTML = ''
+                    setSize(spines.parentElement, 56, 0.25)
+                    OPTIONS.forEach((o) => {
+                        BOOKS.filter((b) => !b.image)
+                            .slice(0, 4)
+                            .forEach((b) => renderBook(spines, b, o.id, s))
+                        el('div', '', spines).style.width = '24px'
+                    })
+
+                    const pals = $('palettes')
+                    pals.innerHTML = ''
+                    Object.entries(PALETTES).forEach(([name, colors]) => {
+                        el('div', 'muted', pals, name)
+                        const row = el('div', 'swatches', pals)
+                        colors.forEach((c) => (el('div', 'swatch', row).style.background = c))
+                    })
+                }
+
+                $('controls').addEventListener('input', render)
+                render()
+            })()
+        </script>
+    </body>
+</html>
