@@ -523,6 +523,413 @@
         z-index: 2;
     }
 
+    /* ========================================
+       DEFAULT COVERS - books without an image
+       Drawn with CSS only (no image file, no web font).
+       Sizes use container query units, so a cover scales with
+       the "Card size" and "Aspect ratio" options.
+       ======================================== */
+
+    .bookshelf-default-cover {
+        --cover-foil: linear-gradient(
+            170deg,
+            #f9eaa8 0%,
+            #d9b44a 28%,
+            #9c7424 52%,
+            #f0d478 72%,
+            #b38a30 100%
+        );
+        --cover-foil-line: linear-gradient(
+            90deg,
+            #9c7424,
+            #f3dc8a 30%,
+            #c69d3c 60%,
+            #f0d478 80%,
+            #9c7424
+        );
+        --cover-foil-solid: #cfa846;
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        border-radius: inherit;
+        container: bookshelf-cover / size;
+        background-color: var(--cover-bg);
+        font-family:
+            'EB Garamond', Garamond, 'Libre Baskerville', Baskerville, 'Book Antiqua', Palatino,
+            Georgia, 'DejaVu Serif', serif;
+        pointer-events: none;
+    }
+
+    [data-cover-foil='silver'] .bookshelf-default-cover {
+        --cover-foil: linear-gradient(
+            170deg,
+            #ffffff 0%,
+            #c9ccd1 28%,
+            #7d828a 52%,
+            #eef0f3 72%,
+            #9aa0a8 100%
+        );
+        --cover-foil-line: linear-gradient(
+            90deg,
+            #7d828a,
+            #f4f5f7 30%,
+            #aab0b8 60%,
+            #eef0f3 80%,
+            #7d828a
+        );
+        --cover-foil-solid: #c3c7cd;
+    }
+
+    [data-cover-foil='copper'] .bookshelf-default-cover {
+        --cover-foil: linear-gradient(
+            170deg,
+            #ffd3b0 0%,
+            #d08a5a 28%,
+            #8a4a25 52%,
+            #f0b48a 72%,
+            #a8603a 100%
+        );
+        --cover-foil-line: linear-gradient(
+            90deg,
+            #8a4a25,
+            #f6c7a2 30%,
+            #c27a4c 60%,
+            #f0b48a 80%,
+            #8a4a25
+        );
+        --cover-foil-solid: #c88456;
+    }
+
+    [data-cover-foil='blind'] .bookshelf-default-cover {
+        --cover-foil: linear-gradient(170deg, rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.5));
+        --cover-foil-line: linear-gradient(90deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45));
+        --cover-foil-solid: rgba(0, 0, 0, 0.45);
+    }
+
+    .bookshelf-default-cover[data-cover-style='cloth'] {
+        background-image:
+            repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 3px),
+            repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.09) 0 1px, transparent 1px 3px),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .35 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E"),
+            radial-gradient(ellipse at 40% 30%, rgba(255, 255, 255, 0.08), transparent 65%),
+            radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.28) 100%);
+    }
+
+    .bookshelf-default-cover[data-cover-style='leather'] {
+        background-image:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E"),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.06' numOctaves='2' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .22 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E"),
+            radial-gradient(ellipse at 38% 30%, rgba(255, 230, 200, 0.13), transparent 60%),
+            radial-gradient(ellipse at center, transparent 48%, rgba(0, 0, 0, 0.5) 100%);
+    }
+
+    .bookshelf-default-cover[data-cover-style='library'] {
+        background-image:
+            repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 2px),
+            repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0 1px, transparent 1px 2px),
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='1' seed='6' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .3 0 0 0 0'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E"),
+            radial-gradient(ellipse at center, transparent 62%, rgba(0, 0, 0, 0.22) 100%);
+    }
+
+    /* Foil lettering: the gradient is clipped to the glyphs. drop-shadow
+       (not text-shadow) draws the pressed-in edge, because a text-shadow
+       shows through the transparent fill. */
+    .bookshelf-cover-foil {
+        background-image: var(--cover-foil);
+        background-size: 100% 1.2em;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+        color: transparent;
+    }
+
+    .bookshelf-cover-title,
+    .bookshelf-cover-author,
+    .bookshelf-cover-spine-text {
+        filter: drop-shadow(-0.5px -0.5px 0 rgba(0, 0, 0, 0.65))
+            drop-shadow(0.5px 0.7px 0 rgba(255, 255, 255, 0.16));
+    }
+
+    [data-cover-foil='blind'] .bookshelf-cover-title,
+    [data-cover-foil='blind'] .bookshelf-cover-author,
+    [data-cover-foil='blind'] .bookshelf-cover-spine-text {
+        filter: drop-shadow(0.6px 0.8px 0 rgba(255, 255, 255, 0.14));
+    }
+
+    .bookshelf-cover-face {
+        position: absolute;
+        inset: 0;
+    }
+
+    .bookshelf-cover-frame {
+        display: none;
+    }
+
+    .bookshelf-cover-content {
+        position: absolute;
+        inset: 13cqmin 11cqmin 11cqmin 15cqmin;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4cqmin;
+        text-align: center;
+    }
+
+    /* --cover-longest-word is the length of the longest word of the title
+       (set by the view): a long word shrinks the title instead of breaking. */
+    .bookshelf-cover-title {
+        font-size: clamp(7px, min(10.5cqw, calc(105cqw / var(--cover-longest-word, 8))), 44px);
+        line-height: 1.12;
+        font-weight: 600;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        overflow: hidden;
+        overflow-wrap: break-word;
+    }
+
+    .bookshelf-cover-author {
+        font-size: clamp(6px, 6.6cqw, 26px);
+        font-style: italic;
+        line-height: 1.15;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    .bookshelf-cover-rule {
+        height: max(1px, 0.7cqmin);
+        width: 70%;
+        flex: none;
+        background: var(--cover-foil-line);
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+    }
+
+    /* Cloth hardcover */
+    [data-cover-style='cloth'] .bookshelf-cover-frame {
+        display: block;
+        position: absolute;
+        inset: 6cqmin 6cqmin 6cqmin 10cqmin;
+        border: max(1px, 0.6cqmin) solid transparent;
+        border-image: var(--cover-foil-line) 1;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    [data-cover-style='cloth'] .bookshelf-cover-frame::before {
+        content: '';
+        position: absolute;
+        inset: 2cqmin;
+        border: 1px solid transparent;
+        border-image: var(--cover-foil-line) 1;
+        opacity: 0.8;
+    }
+
+    [data-cover-style='cloth'] .bookshelf-cover-title {
+        font-variant: small-caps;
+        letter-spacing: 0.03em;
+    }
+
+    .bookshelf-cover-ornament {
+        width: 44%;
+        height: 6cqmin;
+        flex: none;
+        background:
+            linear-gradient(
+                    45deg,
+                    transparent 40%,
+                    var(--cover-foil-solid) 40% 60%,
+                    transparent 60%
+                )
+                center / 4cqmin 4cqmin no-repeat,
+            linear-gradient(
+                    -45deg,
+                    transparent 40%,
+                    var(--cover-foil-solid) 40% 60%,
+                    transparent 60%
+                )
+                center / 4cqmin 4cqmin no-repeat,
+            var(--cover-foil-line) left center / 38% max(1px, 0.6cqmin) no-repeat,
+            var(--cover-foil-line) right center / 38% max(1px, 0.6cqmin) no-repeat;
+    }
+
+    /* Leather with a title label */
+    [data-cover-style='leather'] .bookshelf-cover-frame {
+        display: block;
+        position: absolute;
+        inset: 5cqmin 5cqmin 5cqmin 9cqmin;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        box-shadow:
+            1px 1px 0 rgba(255, 255, 255, 0.08),
+            inset 1px 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    [data-cover-style='leather'] .bookshelf-cover-frame::before {
+        content: '';
+        position: absolute;
+        inset: 3cqmin;
+        border: max(1px, 0.5cqmin) solid transparent;
+        border-image: var(--cover-foil-line) 1;
+    }
+
+    /* Gold dots in the four corners of the frame */
+    [data-cover-style='leather'] .bookshelf-cover-frame::after {
+        content: '';
+        position: absolute;
+        inset: 1.4cqmin;
+        background:
+            radial-gradient(circle, var(--cover-foil-solid) 0 45%, transparent 50%) 0 0 / 4cqmin
+                4cqmin no-repeat,
+            radial-gradient(circle, var(--cover-foil-solid) 0 45%, transparent 50%) 100% 0 / 4cqmin
+                4cqmin no-repeat,
+            radial-gradient(circle, var(--cover-foil-solid) 0 45%, transparent 50%) 0 100% / 4cqmin
+                4cqmin no-repeat,
+            radial-gradient(circle, var(--cover-foil-solid) 0 45%, transparent 50%) 100% 100% /
+                4cqmin 4cqmin no-repeat;
+    }
+
+    [data-cover-style='leather'] .bookshelf-cover-content {
+        justify-content: flex-start;
+        padding-top: 10cqh;
+    }
+
+    .bookshelf-cover-label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding: 5cqmin;
+        background: var(--cover-label-bg);
+        border: max(1px, 0.5cqmin) solid transparent;
+        border-image: var(--cover-foil-line) 1;
+        box-shadow:
+            inset 0 0 6cqmin rgba(0, 0, 0, 0.45),
+            0 1px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    [data-cover-style='leather'] .bookshelf-cover-title {
+        font-size: clamp(6px, min(9cqw, calc(72cqw / var(--cover-longest-word, 8))), 40px);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        -webkit-line-clamp: 3;
+    }
+
+    [data-cover-style='leather'] .bookshelf-cover-author {
+        margin-top: 2cqmin;
+    }
+
+    /* Library binding */
+    [data-cover-style='library'] .bookshelf-cover-content {
+        justify-content: flex-start;
+        padding-top: 2cqh;
+        gap: 3.5cqmin;
+    }
+
+    [data-cover-style='library'] .bookshelf-cover-title {
+        font-size: clamp(6px, min(9.2cqw, calc(82cqw / var(--cover-longest-word, 8))), 40px);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 700;
+    }
+
+    [data-cover-style='library'] .bookshelf-cover-author {
+        margin-top: auto;
+        font-style: normal;
+        font-size: clamp(6px, 5.4cqw, 22px);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    /* Spine layout: replaces the face when the cover is narrow */
+    .bookshelf-cover-spine {
+        display: none;
+        position: absolute;
+        inset: 0;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 6cqh 0;
+    }
+
+    .bookshelf-cover-band {
+        position: relative;
+        width: 100%;
+        height: 5cqh;
+        flex: none;
+    }
+
+    .bookshelf-cover-band::before,
+    .bookshelf-cover-band::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: max(1px, 1.6cqw);
+        background: var(--cover-foil-line);
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    .bookshelf-cover-band::before {
+        top: 0;
+    }
+
+    .bookshelf-cover-band::after {
+        bottom: 0;
+    }
+
+    /* Bottom to top, like the classic spine title */
+    .bookshelf-cover-spine-text {
+        flex: 1;
+        min-height: 0;
+        margin: 4cqh 0;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        transform: rotate(180deg);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: clamp(7px, 24cqw, 20px);
+        font-weight: 600;
+        letter-spacing: 0.04em;
+    }
+
+    .bookshelf-cover-spine-author {
+        font-size: 0.72em;
+        font-weight: 400;
+        font-style: italic;
+    }
+
+    @container bookshelf-cover (max-aspect-ratio: 2 / 5) {
+        .bookshelf-cover-face {
+            display: none;
+        }
+
+        .bookshelf-cover-spine {
+            display: flex;
+        }
+    }
+
+    /* Small covers: drop the details that turn into noise */
+    @container bookshelf-cover (max-width: 96px) {
+        .bookshelf-cover-author,
+        .bookshelf-cover-ornament,
+        .bookshelf-cover-frame::before {
+            display: none;
+        }
+    }
+
+    @container bookshelf-cover (max-width: 64px) {
+        .bookshelf-cover-title {
+            -webkit-line-clamp: 3;
+        }
+
+        .bookshelf-cover-rule {
+            display: none;
+        }
+    }
+
     /* Book info below cover */
     .bookshelf-book-info {
         @apply flex flex-col gap-1 pt-3 px-1;

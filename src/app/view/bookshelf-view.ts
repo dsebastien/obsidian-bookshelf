@@ -1,11 +1,32 @@
-import { BasesView, Menu, NullValue, TFile } from 'obsidian'
+import { BasesView, ListValue, Menu, NullValue, TFile } from 'obsidian'
 import type { QueryController, BasesEntry, BasesEntryGroup } from 'obsidian'
 import type { BookshelfPlugin } from '../plugin'
 import { parseCoverValue, toCssUrl } from './cover-url'
+import {
+    classicSpineColor,
+    DEFAULT_AUTHOR_PROPERTIES,
+    coverAriaLabel,
+    formatAuthor,
+    longestWordLength,
+    normalizeDefaultCover,
+    normalizeFoil,
+    pickCoverColor,
+    pickLabelColor,
+    resolveCoverStyle,
+    spineAuthor
+} from './default-cover'
+import type { DefaultCoverOption } from './default-cover'
 
 // Type declarations are loaded from src/app/types/bases.d.ts
 
 export const BOOKSHELF_VIEW_TYPE = 'bookshelf'
+
+interface RenderOptions {
+    coverProperty: string | null
+    authorProperty: string | null
+    defaultCover: DefaultCoverOption
+    visibleProperties: string[]
+}
 
 export class BookshelfView extends BasesView {
     type = BOOKSHELF_VIEW_TYPE
@@ -43,6 +64,9 @@ export class BookshelfView extends BasesView {
         const coverProperty = this.config.getAsPropertyId('coverProperty')
         const imageFit = (this.config.get('imageFit') as string) ?? 'contain'
         const aspectRatio = (this.config.get('aspectRatio') as number) ?? 1
+        const defaultCover = normalizeDefaultCover(this.config.get('defaultCover'))
+        const coverFoil = normalizeFoil(this.config.get('coverFoil'))
+        const authorProperty = this.config.getAsPropertyId('authorProperty')
 
         // Get visible properties from Base configuration
         const visibleProperties = this.config.getOrder()
@@ -59,6 +83,7 @@ export class BookshelfView extends BasesView {
         this.containerEl.dataset['shelfTexture'] = shelfTexture
         this.containerEl.dataset['shelfDecorations'] = showShelf ? 'on' : 'off'
         this.containerEl.dataset['bookShadows'] = showShadows ? 'on' : 'off'
+        this.containerEl.dataset['coverFoil'] = coverFoil
 
         // Handle empty state
         if (entries.length === 0) {
@@ -66,8 +91,10 @@ export class BookshelfView extends BasesView {
             return
         }
 
-        const renderOptions = {
+        const renderOptions: RenderOptions = {
             coverProperty,
+            authorProperty,
+            defaultCover,
             visibleProperties
         }
 
@@ -98,13 +125,7 @@ export class BookshelfView extends BasesView {
     /**
      * Render groups that come from Bases groupBy configuration
      */
-    private renderBasesGroups(
-        groups: BasesEntryGroup[],
-        options: {
-            coverProperty: string | null
-            visibleProperties: string[]
-        }
-    ): void {
+    private renderBasesGroups(groups: BasesEntryGroup[], options: RenderOptions): void {
         for (const group of groups) {
             const groupEntries = group.entries ?? []
             const label = group.key?.toString() ?? 'Ungrouped'
@@ -115,14 +136,7 @@ export class BookshelfView extends BasesView {
     /**
      * Render a single bookshelf with books
      */
-    private renderShelf(
-        entries: BasesEntry[],
-        label: string,
-        options: {
-            coverProperty: string | null
-            visibleProperties: string[]
-        }
-    ): void {
+    private renderShelf(entries: BasesEntry[], label: string, options: RenderOptions): void {
         const shelfSection = this.containerEl.createDiv({ cls: 'bookshelf-section' })
 
         // Shelf header
@@ -157,14 +171,7 @@ export class BookshelfView extends BasesView {
     /**
      * Render a single book on the shelf
      */
-    private renderBook(
-        container: HTMLElement,
-        entry: BasesEntry,
-        options: {
-            coverProperty: string | null
-            visibleProperties: string[]
-        }
-    ): void {
+    private renderBook(container: HTMLElement, entry: BasesEntry, options: RenderOptions): void {
         const bookEl = container.createDiv({ cls: 'bookshelf-book' })
 
         // Get title for spine (fallback to filename)
@@ -178,21 +185,27 @@ export class BookshelfView extends BasesView {
             !rawCoverValue || rawCoverValue instanceof NullValue ? '' : rawCoverValue.toString()
         const coverUrl = this.resolveCoverUrl(coverValue, entry.file.path)
 
-        // Book cover/spine
-        const coverEl = bookEl.createDiv({ cls: 'bookshelf-book-cover' })
+        const author = this.readAuthor(entry, options.authorProperty)
+
+        // Book cover
+        const coverEl = bookEl.createDiv({
+            cls: 'bookshelf-book-cover',
+            attr: { 'aria-label': coverAriaLabel(title, author) }
+        })
 
         if (coverUrl) {
             // Has cover image
             coverEl.addClass('bookshelf-book-cover--image')
             coverEl.style.backgroundImage = toCssUrl(coverUrl)
+            // An image that does not load would leave an empty block: draw the default cover instead.
+            this.onCoverImageError(coverUrl, () => {
+                if (!coverEl.isConnected) return
+                coverEl.removeClass('bookshelf-book-cover--image')
+                coverEl.style.removeProperty('background-image')
+                this.renderDefaultCover(coverEl, title, author, options.defaultCover)
+            })
         } else {
-            // Generate a colored spine
-            coverEl.addClass('bookshelf-book-cover--spine')
-            coverEl.style.backgroundColor = this.generateSpineColor(title)
-
-            // Add vertical title on spine
-            const spineTitle = coverEl.createDiv({ cls: 'bookshelf-spine-title' })
-            spineTitle.setText(this.truncateTitle(title, 25))
+            this.renderDefaultCover(coverEl, title, author, options.defaultCover)
         }
 
         // Click on cover to open file (ctrl/cmd+click opens in new tab)
@@ -327,23 +340,104 @@ export class BookshelfView extends BasesView {
     }
 
     /**
-     * Generate a deterministic color for a book spine based on title
+     * Read the author for the default cover. A list shows its first value
+     * (plus "et al."), and wikilinks show their display text.
+     * Without an "Author property", try `author`, then `authors`.
      */
-    private generateSpineColor(title: string): string {
-        // Simple hash function
-        let hash = 0
-        for (let i = 0; i < title.length; i++) {
-            const char = title.charCodeAt(i)
-            hash = (hash << 5) - hash + char
-            hash = hash & hash
+    private readAuthor(entry: BasesEntry, authorProperty: string | null): string {
+        for (const propId of authorProperty ? [authorProperty] : DEFAULT_AUTHOR_PROPERTIES) {
+            const author = this.readAuthorValue(entry, propId)
+            if (author) return author
+        }
+        return ''
+    }
+
+    private readAuthorValue(entry: BasesEntry, propId: string): string {
+        const value = entry.getValue(propId)
+        if (!value || value instanceof NullValue) return ''
+        if (value instanceof ListValue) {
+            const items: string[] = []
+            for (let i = 0; i < value.length(); i++) {
+                items.push(value.get(i).toString())
+            }
+            return formatAuthor(items)
+        }
+        return formatAuthor([value.toString()])
+    }
+
+    /**
+     * Call `onError` when the image at `url` cannot be loaded (404, offline, bad file).
+     * The browser cache serves the request, so the image is not downloaded twice.
+     */
+    private onCoverImageError(url: string, onError: () => void): void {
+        const probe = new Image()
+        probe.addEventListener('error', onError, { once: true })
+        probe.src = url
+    }
+
+    /**
+     * Draw the cover of a book that has no usable image.
+     * `classic` is the colored spine with a vertical title. The other styles
+     * draw a bound cover with the title (and author) in foil lettering.
+     * The stylesheet switches to a spine layout when the cover is narrow.
+     */
+    private renderDefaultCover(
+        coverEl: HTMLElement,
+        title: string,
+        author: string,
+        option: DefaultCoverOption
+    ): void {
+        const style = resolveCoverStyle(option, title)
+
+        if (style === 'classic') {
+            coverEl.addClass('bookshelf-book-cover--spine')
+            coverEl.style.backgroundColor = classicSpineColor(title)
+            const spineTitle = coverEl.createDiv({ cls: 'bookshelf-spine-title' })
+            spineTitle.setText(this.truncateTitle(title, 25))
+            return
         }
 
-        // Generate muted colors suitable for book spines
-        const hue = Math.abs(hash) % 360
-        const saturation = 30 + (Math.abs(hash >> 8) % 30) // 30-60%
-        const lightness = 35 + (Math.abs(hash >> 16) % 20) // 35-55%
+        coverEl.addClass('bookshelf-book-cover--default')
+        const art = coverEl.createDiv({
+            cls: 'bookshelf-default-cover',
+            attr: { 'data-cover-style': style }
+        })
+        art.style.setProperty('--cover-bg', pickCoverColor(style, title))
+        art.style.setProperty('--cover-label-bg', pickLabelColor(title))
+        art.style.setProperty('--cover-longest-word', String(longestWordLength(title)))
 
-        return `hsl(${hue}, ${saturation}%, ${lightness}%)`
+        // Front face
+        const face = art.createDiv({ cls: 'bookshelf-cover-face' })
+        face.createDiv({ cls: 'bookshelf-cover-frame' })
+        const content = face.createDiv({ cls: 'bookshelf-cover-content' })
+        const block =
+            style === 'leather' ? content.createDiv({ cls: 'bookshelf-cover-label' }) : content
+        if (style === 'library') block.createDiv({ cls: 'bookshelf-cover-rule' })
+        block
+            .createDiv({ cls: 'bookshelf-cover-title' })
+            .createSpan({ cls: 'bookshelf-cover-foil', text: title })
+        if (style === 'library') block.createDiv({ cls: 'bookshelf-cover-rule' })
+        if (author) {
+            if (style === 'cloth') block.createDiv({ cls: 'bookshelf-cover-ornament' })
+            content
+                .createDiv({ cls: 'bookshelf-cover-author' })
+                .createSpan({ cls: 'bookshelf-cover-foil', text: author })
+        }
+
+        // Spine (shown instead of the face when the cover is narrow)
+        const spine = art.createDiv({ cls: 'bookshelf-cover-spine' })
+        spine.createDiv({ cls: 'bookshelf-cover-band' })
+        const spineText = spine.createDiv({ cls: 'bookshelf-cover-spine-text' })
+        spineText.createSpan({ cls: 'bookshelf-cover-foil', text: title })
+        const shortAuthor = spineAuthor(title, author)
+        if (shortAuthor) {
+            spineText.createSpan({ cls: 'bookshelf-cover-foil', text: '  ·  ' })
+            spineText.createSpan({
+                cls: 'bookshelf-cover-foil bookshelf-cover-spine-author',
+                text: shortAuthor
+            })
+        }
+        spine.createDiv({ cls: 'bookshelf-cover-band' })
     }
 
     /**

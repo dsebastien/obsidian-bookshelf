@@ -86,6 +86,37 @@ export function getBookshelfViewOptions(): BasesAllOptions[] {
                     }
                 },
                 {
+                    type: 'dropdown',
+                    key: 'defaultCover',
+                    displayName: 'Cover without image',
+                    default: 'cloth',
+                    options: {
+                        cloth: 'Cloth hardcover',
+                        leather: 'Leather with label',
+                        library: 'Library binding',
+                        mixed: 'Mixed (cloth, leather, library)',
+                        classic: 'Classic spine'
+                    }
+                },
+                {
+                    type: 'property',
+                    key: 'authorProperty',
+                    displayName: 'Author property',
+                    placeholder: 'Select property for the author'
+                },
+                {
+                    type: 'dropdown',
+                    key: 'coverFoil',
+                    displayName: 'Cover lettering',
+                    default: 'gold',
+                    options: {
+                        gold: 'Gold leaf',
+                        silver: 'Silver',
+                        copper: 'Copper',
+                        blind: 'Blind (pressed, no foil)'
+                    }
+                },
+                {
                     type: 'slider',
                     key: 'aspectRatio',
                     displayName: 'Aspect ratio',
